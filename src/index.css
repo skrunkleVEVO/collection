@@ -6,28 +6,25 @@
   html {
     color-scheme: dark;
     -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
   }
   body {
-    @apply bg-zinc-950 font-sans text-zinc-300 antialiased;
-    /* Faint dot field across the whole page */
-    background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: 18px 18px;
+    @apply min-h-screen bg-zinc-950 font-sans text-zinc-300 antialiased;
   }
   ::selection {
-    @apply bg-emerald-400/25 text-zinc-50;
+    @apply bg-emerald-400/25 text-white;
   }
   :focus-visible {
-    @apply outline outline-1 outline-offset-2 outline-emerald-400;
+    @apply rounded-lg outline outline-2 outline-offset-2 outline-emerald-400/70;
   }
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 10px;
   }
   ::-webkit-scrollbar-track {
     @apply bg-transparent;
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-zinc-800;
+    @apply rounded-full border-2 border-solid border-zinc-950 bg-zinc-800;
   }
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-zinc-700;
@@ -35,77 +32,78 @@
 }
 
 @layer components {
-  /* Monospace metadata, e.g. "// [SYS_01]" */
-  .meta {
-    @apply font-mono text-[10px] uppercase tracking-[0.16em] text-zinc-500;
+  /* Frosted glass card */
+  .glass {
+    @apply relative overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/40 shadow-2xl shadow-black/40 backdrop-blur-xl transition-all duration-300;
   }
-
-  /* KEY: VALUE spec tag, e.g. "STATUS: ACTIVE" */
-  .spec-tag {
-    @apply inline-flex max-w-full flex-wrap items-center gap-1 border border-zinc-800 bg-zinc-950/70 px-1.5 py-[3px] font-mono text-[10px] uppercase leading-none tracking-wider text-zinc-400;
+  .glass-hover {
+    @apply hover:-translate-y-1 hover:border-white/20 hover:shadow-emerald-500/5;
   }
-  .spec-tag > b {
-    @apply font-medium text-zinc-200;
-  }
-
-  /* Outbound link control */
-  .out-link {
-    @apply relative z-10 inline-flex items-center gap-1.5 border border-zinc-800 bg-zinc-900/80 px-2 py-1 font-mono text-[10.5px] uppercase tracking-wider text-zinc-300 transition-colors hover:border-emerald-400/60 hover:text-emerald-300;
-  }
-  .out-link-off {
-    @apply relative z-10 inline-flex cursor-not-allowed items-center gap-1.5 border border-dashed border-zinc-800 px-2 py-1 font-mono text-[10.5px] uppercase tracking-wider text-zinc-600;
-  }
-
-  /* Bento cell with a cursor-tracked emerald spotlight */
-  .cell {
-    @apply relative isolate overflow-hidden rounded-sm border border-zinc-800 bg-zinc-950/90 transition-colors duration-300;
-    --mx: 50%;
-    --my: 50%;
-  }
-  .cell::before {
+  /* Soft top highlight, like light catching the edge of a glass panel */
+  .glass::before {
     content: '';
-    @apply pointer-events-none absolute inset-0 -z-10 opacity-0 transition-opacity duration-300;
-    background: radial-gradient(420px circle at var(--mx) var(--my), rgba(52, 211, 153, 0.09), transparent 60%);
-  }
-  .cell::after {
-    /* Border glow that follows the cursor */
-    content: '';
-    @apply pointer-events-none absolute inset-0 rounded-sm opacity-0 transition-opacity duration-300;
-    padding: 1px;
-    background: radial-gradient(260px circle at var(--mx) var(--my), rgba(52, 211, 153, 0.55), transparent 65%);
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-  }
-  .cell:hover::before,
-  .cell:hover::after,
-  .cell:focus-within::before {
-    @apply opacity-100;
+    @apply pointer-events-none absolute inset-x-0 top-0 h-px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
   }
 
-  /* Blueprint grid for the spec-sheet drawer */
-  .blueprint {
-    background-color: #08090b;
-    background-image:
-      linear-gradient(rgba(52, 211, 153, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(52, 211, 153, 0.05) 1px, transparent 1px),
-      linear-gradient(rgba(52, 211, 153, 0.022) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(52, 211, 153, 0.022) 1px, transparent 1px);
-    background-size: 80px 80px, 80px 80px, 16px 16px, 16px 16px;
+  /* macOS-style pill buttons */
+  .pill {
+    @apply inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-zinc-200 transition-all duration-200 hover:border-white/20 hover:bg-white/10 hover:text-white active:scale-[0.97];
+  }
+  .pill-primary {
+    @apply inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-zinc-950 shadow-lg shadow-white/10 transition-all duration-200 hover:bg-zinc-200 active:scale-[0.97];
+  }
+  .pill-sm {
+    @apply px-3 py-1.5 text-xs;
+  }
+  .pill-disabled {
+    @apply inline-flex cursor-default items-center gap-2 rounded-full border border-dashed border-white/10 px-3 py-1.5 text-xs font-medium text-zinc-500;
   }
 
-  /* Diagonal hatch fill for placeholder / empty regions */
-  .hatch {
-    background-image: repeating-linear-gradient(-45deg, rgba(63, 63, 70, 0.35) 0 1px, transparent 1px 7px);
+  /* Small tech badge */
+  .badge {
+    @apply inline-flex items-center rounded-md border border-emerald-400/15 bg-emerald-400/5 px-2 py-0.5 font-mono text-xs text-emerald-400;
+  }
+
+  /* Rounded app-icon tile, like a Dock or Raycast icon */
+  .app-icon {
+    @apply flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 shadow-lg shadow-black/30;
   }
 }
 
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(3%, -4%, 0) scale(1.06);
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-drift {
+  animation: drift 18s ease-in-out infinite;
+}
+.animate-rise {
+  animation: rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+  .animate-drift,
+  .animate-rise {
+    animation: none;
+  }
+  .glass-hover:hover {
+    transform: none;
   }
 }
