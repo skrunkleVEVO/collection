@@ -1,0 +1,17 @@
+{
+  "name": "Your Name",
+  "role": "Engineering Student · Software & Game Developer",
+  "location": "Your City, Country",
+  "bio": "I build tools that solve problems I actually have: Android apps, browser extensions, Python utilities and game mods. As an engineering student I bring the same approach to design projects: define the problem, test the idea and reflect on what worked.",
+  "eportfolioIntro": "This ePortfolio gathers my university engineering design work, technical documentation and reflections on how I'm developing as an engineer.",
+  "email": "you@example.com",
+  "githubUrl": "https://github.com/YOUR_GITHUB_USERNAME",
+  "linkedinUrl": "https://www.linkedin.com/in/YOUR_LINKEDIN",
+  "resumeUrl": "",
+  "skills": [
+    { "group": "Languages", "items": ["Kotlin", "Java", "Python", "JavaScript", "Lua"] },
+    { "group": "Frameworks & Platforms", "items": ["Android SDK", "React", "Tailwind CSS", "Chrome Extensions", "Forge / Fabric", "Roblox Studio"] },
+    { "group": "Engineering", "items": ["Systems Design", "CAD", "Technical Writing", "Design Briefs"] },
+    { "group": "Tools", "items": ["Git & GitHub", "Android Studio", "VS Code", "IntelliJ IDEA", "Vite"] }
+  ]
+}
