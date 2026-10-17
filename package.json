@@ -11,6 +11,7 @@
     "deploy": "gh-pages -d dist --nojekyll"
   },
   "dependencies": {
+    "framer-motion": "^14.3.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

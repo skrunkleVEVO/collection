@@ -15,7 +15,7 @@
     @apply bg-emerald-400/25 text-white;
   }
   :focus-visible {
-    @apply rounded-lg outline outline-2 outline-offset-2 outline-emerald-400/70;
+    @apply rounded-lg outline outline-2 outline-offset-4 outline-emerald-400/70;
   }
   ::-webkit-scrollbar {
     width: 10px;
@@ -32,78 +32,33 @@
 }
 
 @layer components {
-  /* Frosted glass card */
-  .glass {
-    @apply relative overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/40 shadow-2xl shadow-black/40 backdrop-blur-xl transition-all duration-300;
-  }
-  .glass-hover {
-    @apply hover:-translate-y-1 hover:border-white/20 hover:shadow-emerald-500/5;
-  }
-  /* Soft top highlight, like light catching the edge of a glass panel */
-  .glass::before {
-    content: '';
-    @apply pointer-events-none absolute inset-x-0 top-0 h-px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+  /* Monospace category / metadata label */
+  .meta {
+    @apply font-mono text-xs uppercase tracking-widest text-zinc-400;
   }
 
-  /* macOS-style pill buttons */
   .pill {
-    @apply inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-zinc-200 transition-all duration-200 hover:border-white/20 hover:bg-white/10 hover:text-white active:scale-[0.97];
+    @apply inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-zinc-200 transition-colors duration-200 hover:border-white/25 hover:bg-white/10 hover:text-white;
   }
   .pill-primary {
-    @apply inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-zinc-950 shadow-lg shadow-white/10 transition-all duration-200 hover:bg-zinc-200 active:scale-[0.97];
-  }
-  .pill-sm {
-    @apply px-3 py-1.5 text-xs;
+    @apply inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-zinc-950 transition-colors duration-200 hover:bg-zinc-200;
   }
   .pill-disabled {
-    @apply inline-flex cursor-default items-center gap-2 rounded-full border border-dashed border-white/10 px-3 py-1.5 text-xs font-medium text-zinc-500;
+    @apply inline-flex cursor-default items-center gap-2 rounded-full border border-dashed border-white/10 px-4 py-2 text-sm text-zinc-500;
   }
 
-  /* Small tech badge */
   .badge {
-    @apply inline-flex items-center rounded-md border border-emerald-400/15 bg-emerald-400/5 px-2 py-0.5 font-mono text-xs text-emerald-400;
-  }
-
-  /* Rounded app-icon tile, like a Dock or Raycast icon */
-  .app-icon {
-    @apply flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 shadow-lg shadow-black/30;
+    @apply inline-flex items-center rounded-full border border-white/10 px-3 py-1 font-mono text-xs text-zinc-300;
   }
 }
 
-@keyframes drift {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  50% {
-    transform: translate3d(3%, -4%, 0) scale(1.06);
-  }
-}
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-drift {
-  animation: drift 18s ease-in-out infinite;
-}
-.animate-rise {
-  animation: rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-drift,
-  .animate-rise {
-    animation: none;
-  }
-  .glass-hover:hover {
-    transform: none;
-  }
+/* Film grain over the whole page, keeps the dark areas from looking flat */
+.grain::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
