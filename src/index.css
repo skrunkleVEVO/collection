@@ -2,63 +2,41 @@
 @tailwind components;
 @tailwind utilities;
 
+/* shadcn/ui tokens (zinc, dark). --glow-* drive the MagicCard border highlight. */
 @layer base {
+  :root {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 8% 6%;
+    --card-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --radius: 0.75rem;
+    --glow-from: 160 84% 60%;
+    --glow-to: 189 94% 55%;
+  }
+
+  * {
+    @apply border-border;
+  }
   html {
     color-scheme: dark;
     -webkit-tap-highlight-color: transparent;
     scroll-behavior: smooth;
   }
   body {
-    @apply min-h-screen bg-zinc-950 font-sans text-zinc-300 antialiased;
+    @apply min-h-screen bg-background font-sans text-foreground antialiased;
   }
   ::selection {
     @apply bg-emerald-400/25 text-white;
   }
-  :focus-visible {
-    @apply rounded-lg outline outline-2 outline-offset-4 outline-emerald-400/70;
-  }
-  ::-webkit-scrollbar {
-    width: 10px;
-  }
-  ::-webkit-scrollbar-track {
-    @apply bg-transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    @apply rounded-full border-2 border-solid border-zinc-950 bg-zinc-800;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-zinc-700;
-  }
-}
-
-@layer components {
-  /* Monospace category / metadata label */
-  .meta {
-    @apply font-mono text-xs uppercase tracking-widest text-zinc-400;
-  }
-
-  .pill {
-    @apply inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-zinc-200 transition-colors duration-200 hover:border-white/25 hover:bg-white/10 hover:text-white;
-  }
-  .pill-primary {
-    @apply inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-zinc-950 transition-colors duration-200 hover:bg-zinc-200;
-  }
-  .pill-disabled {
-    @apply inline-flex cursor-default items-center gap-2 rounded-full border border-dashed border-white/10 px-4 py-2 text-sm text-zinc-500;
-  }
-
-  .badge {
-    @apply inline-flex items-center rounded-full border border-white/10 px-3 py-1 font-mono text-xs text-zinc-300;
-  }
-}
-
-/* Film grain over the whole page, keeps the dark areas from looking flat */
-.grain::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  pointer-events: none;
-  opacity: 0.05;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }

@@ -1,5 +1,12 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion';
+import { ArrowUpRight, FileText, X } from 'lucide-react';
+
+import { BentoGrid } from '@/components/magicui/bento-grid';
+import { MagicCard } from '@/components/magicui/magic-card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 const GITHUB = 'https://github.com/skrunkleVEVO';
 const img = (file) => `${import.meta.env.BASE_URL}images/${file}`;
@@ -145,55 +152,64 @@ const PROJECTS = [
 
 const byId = Object.fromEntries(PROJECTS.map((p) => [p.id, p]));
 
+
 /* ---------- Motion presets ---------- */
 
 const ease = [0.22, 1, 0.36, 1];
-const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.09, delayChildren: 0.05 } } };
+const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } } };
 const rise = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.8, ease } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease } },
 };
 
-/* ---------- Icons ---------- */
+/* ---------- Icons & links ---------- */
 
-const ICONS = {
-  github: (
-    <path
-      fill="currentColor"
-      stroke="none"
-      d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"
-    />
-  ),
-  external: <path d="M7 17 17 7M8 7h9v9" />,
-  doc: <path d="M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h6" />,
-  arrow: <path d="M7 17 17 7M8 7h9v9" />,
-  close: <path d="M6 6l12 12M18 6 6 18" />,
-};
-
-function Icon({ name, className = 'h-4 w-4' }) {
+// Lucide v1 ships no brand marks, so GitHub stays inline.
+function GithubIcon(props) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
-      {ICONS[name]}
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
+      <path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z" />
     </svg>
   );
 }
 
+const ICONS = { github: GithubIcon, external: ArrowUpRight, doc: FileText };
+
 function LinkButton({ label, href, icon, primary }) {
+  const Glyph = ICONS[icon];
   if (!href) {
     return (
-      <span className="pill-disabled" title="Not public yet">
-        {icon && <Icon name={icon} />}
-        {label}
-      </span>
+      <Button asChild variant="outline" className="cursor-default border-dashed text-muted-foreground hover:bg-transparent hover:text-muted-foreground">
+        <span title="Not public yet">
+          {Glyph && <Glyph />}
+          {label}
+        </span>
+      </Button>
     );
   }
   return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className={primary ? 'pill-primary' : 'pill'}>
-      {icon && <Icon name={icon} />}
-      {label}
-    </a>
+    <Button asChild variant={primary ? 'default' : 'outline'}>
+      <a href={href} target="_blank" rel="noopener noreferrer">
+        {Glyph && <Glyph />}
+        {label}
+      </a>
+    </Button>
   );
 }
+
+function TechTags({ tech, className }) {
+  return (
+    <div className={cn('flex flex-wrap gap-1.5', className)}>
+      {tech.map((t) => (
+        <Badge key={t} variant="outline">
+          {t}
+        </Badge>
+      ))}
+    </div>
+  );
+}
+
+/* ---------- Illustrated covers for projects without screenshots ---------- */
 
 /* ---------- Illustrated covers for projects without screenshots ---------- */
 
@@ -268,7 +284,7 @@ function PlannerVisual() {
         </div>
         <div className="flex w-28 flex-col gap-2 rounded-xl bg-zinc-900/80 p-3">
           <span className="font-mono text-[9px] text-zinc-500">FOCUS</span>
-          <span className="font-serif text-3xl text-white">24:59</span>
+          <span className="font-mono text-2xl font-semibold text-white">24:59</span>
           <div className="mt-auto h-1 overflow-hidden rounded-full bg-zinc-800">
             <div className="h-full w-2/3 bg-amber-400" />
           </div>
@@ -332,81 +348,45 @@ function Cover({ project, imageIndex = 0 }) {
   return <Visual />;
 }
 
-/* ---------- Gallery ---------- */
 
-function GalleryCard({ project, onOpen, className = '', aspect = 'aspect-[4/3]' }) {
+/* ---------- Project cards ---------- */
+
+function ProjectCard({ project, onOpen, className }) {
   return (
-    <motion.button
-      type="button"
-      variants={rise}
-      whileHover="hover"
-      onClick={() => onOpen(project.id)}
-      className={`group block w-full text-left ${className}`}
-      aria-label={`Open ${project.title}`}
-    >
-      <motion.div variants={{ hover: { y: -6, scale: 1.02 } }} transition={{ duration: 0.5, ease }}>
-        <motion.div layoutId={`media-${project.id}`} className={`relative overflow-hidden rounded-3xl bg-zinc-900 shadow-2xl shadow-black/50 ${aspect}`}>
-          <motion.div className="h-full w-full" variants={{ hover: { scale: 1.06 } }} transition={{ duration: 0.8, ease }}>
-            <Cover project={project} />
+    <motion.div variants={rise} className={className}>
+      <MagicCard className="h-full rounded-2xl">
+        <button
+          type="button"
+          onClick={() => onOpen(project.id)}
+          className="flex h-full w-full flex-col rounded-2xl p-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          aria-label={`Open ${project.title}`}
+        >
+          <motion.div layoutId={`media-${project.id}`} className="relative min-h-0 flex-1 overflow-hidden rounded-xl bg-muted">
+            <div className="h-full w-full transition-transform duration-700 ease-out group-hover:scale-[1.03]">
+              <Cover project={project} />
+            </div>
+            {project.images?.length > 1 && (
+              <Badge variant="secondary" className="absolute right-3 top-3 bg-background/70 backdrop-blur">
+                {project.images.length} shots
+              </Badge>
+            )}
           </motion.div>
-          <div className="pointer-events-none absolute inset-0 rounded-3xl ring-1 ring-inset ring-white/5" />
-          {project.images?.length > 1 && (
-            <span className="absolute right-4 top-4 rounded-full bg-black/60 px-2.5 py-1 font-mono text-[10px] text-zinc-300 backdrop-blur">
-              {project.images.length} shots
-            </span>
-          )}
-        </motion.div>
-      </motion.div>
 
-      <div className="mt-5 flex items-start justify-between gap-4">
-        <div>
-          <p className="meta">
-            {project.index} — {project.category}
-          </p>
-          <h3 className="mt-2 font-serif text-3xl tracking-tight text-white sm:text-4xl">{project.title}</h3>
-          <p className="mt-1 max-w-md text-sm leading-relaxed text-zinc-400">{project.tagline}</p>
-        </div>
-        <span className="mt-6 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 text-zinc-400 transition-colors duration-300 group-hover:border-white/40 group-hover:text-white">
-          <Icon name="arrow" />
-        </span>
-      </div>
-    </motion.button>
-  );
-}
-
-function FeaturedCard({ project, onOpen }) {
-  return (
-    <motion.button
-      type="button"
-      variants={rise}
-      whileHover="hover"
-      onClick={() => onOpen(project.id)}
-      className="group grid w-full items-center gap-8 text-left lg:grid-cols-12 lg:gap-12"
-      aria-label={`Open ${project.title}`}
-    >
-      <motion.div className="lg:col-span-7" variants={{ hover: { y: -6, scale: 1.02 } }} transition={{ duration: 0.5, ease }}>
-        <motion.div layoutId={`media-${project.id}`} className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-zinc-900 shadow-2xl shadow-black/50">
-          <motion.div className="h-full w-full" variants={{ hover: { scale: 1.06 } }} transition={{ duration: 0.8, ease }}>
-            <Cover project={project} />
-          </motion.div>
-          <div className="pointer-events-none absolute inset-0 rounded-3xl ring-1 ring-inset ring-white/5" />
-        </motion.div>
-      </motion.div>
-
-      <div className="lg:col-span-5">
-        <p className="meta text-emerald-400">Featured · {project.index} — {project.category}</p>
-        <h3 className="mt-4 font-serif text-5xl tracking-tight text-white sm:text-7xl">{project.title}</h3>
-        <p className="mt-4 text-base leading-relaxed text-zinc-400">{project.tagline}</p>
-        <div className="mt-6 flex flex-wrap gap-2">
-          {project.tech.map((t) => (
-            <span key={t} className="badge">{t}</span>
-          ))}
-        </div>
-        <span className="mt-8 inline-flex items-center gap-2 border-b border-white/20 pb-1 text-sm font-medium text-white transition-colors group-hover:border-white">
-          Read the case study <Icon name="arrow" />
-        </span>
-      </div>
-    </motion.button>
+          <div className="flex flex-col gap-2 px-3 pb-3 pt-4">
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <span>{project.category}</span>
+              <span className="font-mono">{project.year}</span>
+            </div>
+            <div className="flex items-start justify-between gap-3">
+              <h3 className="text-lg font-semibold tracking-tight text-foreground sm:text-xl">{project.title}</h3>
+              <ArrowUpRight className="mt-1 size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
+            </div>
+            <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">{project.tagline}</p>
+            <TechTags tech={project.tech} className="mt-1" />
+          </div>
+        </button>
+      </MagicCard>
+    </motion.div>
   );
 }
 
@@ -429,7 +409,7 @@ function ProjectSheet({ project, onClose }) {
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true" aria-label={project.title}>
       <motion.div
-        className="fixed inset-0 bg-zinc-950/85 backdrop-blur-md"
+        className="fixed inset-0 bg-background/85 backdrop-blur-md"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -438,21 +418,20 @@ function ProjectSheet({ project, onClose }) {
       />
 
       <div className="pointer-events-none relative mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-12">
-        <motion.button
-          type="button"
-          onClick={onClose}
-          className="pointer-events-auto fixed right-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-zinc-900/80 text-zinc-300 backdrop-blur transition-colors hover:text-white sm:right-8 sm:top-8"
+        <motion.div
+          className="pointer-events-auto fixed right-4 top-4 z-10 sm:right-8 sm:top-8"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
-          aria-label="Close"
         >
-          <Icon name="close" className="h-5 w-5" />
-        </motion.button>
+          <Button variant="outline" size="icon" onClick={onClose} className="bg-background/80 backdrop-blur" aria-label="Close">
+            <X />
+          </Button>
+        </motion.div>
 
         <motion.div
           layoutId={`media-${project.id}`}
-          className="pointer-events-auto relative aspect-[16/10] overflow-hidden rounded-3xl bg-zinc-900 shadow-2xl shadow-black/60"
+          className="pointer-events-auto relative aspect-[16/10] overflow-hidden rounded-2xl border bg-muted"
           transition={{ duration: 0.6, ease }}
         >
           <AnimatePresence mode="popLayout" initial={false}>
@@ -481,7 +460,10 @@ function ProjectSheet({ project, onClose }) {
                 key={im.src}
                 type="button"
                 onClick={() => setShot(i)}
-                className={`h-16 w-24 shrink-0 overflow-hidden rounded-xl transition-opacity sm:h-20 sm:w-32 ${i === shot ? 'opacity-100 ring-2 ring-white/70' : 'opacity-40 hover:opacity-80'}`}
+                className={cn(
+                  'h-16 w-24 shrink-0 overflow-hidden rounded-lg border transition-opacity sm:h-20 sm:w-32',
+                  i === shot ? 'opacity-100 ring-2 ring-ring' : 'opacity-40 hover:opacity-80',
+                )}
                 aria-label={`Show screenshot ${i + 1}`}
               >
                 <img src={im.src} alt="" className="h-full w-full object-cover object-top" />
@@ -498,13 +480,13 @@ function ProjectSheet({ project, onClose }) {
           exit={{ opacity: 0, y: 10, transition: { duration: 0.2 } }}
         >
           <div className="md:col-span-7">
-            <motion.p variants={rise} className="meta">
-              {project.index} — {project.category} · {project.year}
+            <motion.p variants={rise} className="text-sm text-muted-foreground">
+              {project.category} · {project.year}
             </motion.p>
-            <motion.h2 variants={rise} className="mt-3 font-serif text-5xl tracking-tight text-white sm:text-6xl">
+            <motion.h2 variants={rise} className="mt-2 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
               {project.title}
             </motion.h2>
-            <motion.p variants={rise} className="mt-5 text-base leading-relaxed text-zinc-300">
+            <motion.p variants={rise} className="mt-5 text-base leading-relaxed text-muted-foreground">
               {project.description}
             </motion.p>
             <motion.div variants={rise} className="mt-8 flex flex-wrap gap-3">
@@ -515,20 +497,16 @@ function ProjectSheet({ project, onClose }) {
           </div>
 
           <motion.div variants={rise} className="md:col-span-5">
-            <p className="meta">Highlights</p>
-            <ul className="mt-4 divide-y divide-white/5 border-y border-white/5">
+            <h3 className="text-sm font-medium text-foreground">Highlights</h3>
+            <ul className="mt-3 divide-y border-y">
               {project.highlights.map((h) => (
-                <li key={h} className="py-3 text-sm leading-relaxed text-zinc-300">
+                <li key={h} className="py-3 text-sm leading-relaxed text-muted-foreground">
                   {h}
                 </li>
               ))}
             </ul>
-            <p className="meta mt-8">Built with</p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {project.tech.map((t) => (
-                <span key={t} className="badge">{t}</span>
-              ))}
-            </div>
+            <h3 className="mt-8 text-sm font-medium text-foreground">Built with</h3>
+            <TechTags tech={project.tech} className="mt-3" />
           </motion.div>
         </motion.div>
       </div>
@@ -538,6 +516,8 @@ function ProjectSheet({ project, onClose }) {
 
 /* ---------- Page ---------- */
 
+const reveal = { variants: stagger, initial: 'hidden', whileInView: 'show', viewport: { once: true, margin: '-80px' } };
+
 export default function App() {
   const [openId, setOpenId] = useState(null);
   const open = openId ? byId[openId] : null;
@@ -545,84 +525,88 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion="user" transition={{ duration: 0.6, ease }}>
-      <div className="grain relative min-h-screen overflow-x-hidden">
+      <div className="relative min-h-screen overflow-x-hidden">
         <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[40rem] bg-gradient-to-b from-emerald-500/[0.06] via-transparent to-transparent" aria-hidden="true" />
 
         <motion.header
-          className="mx-auto flex max-w-7xl items-center justify-between px-4 py-6 sm:px-8"
+          className="mx-auto flex max-w-6xl items-center justify-between px-4 py-6 sm:px-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
         >
-          <span className="font-mono text-xs uppercase tracking-widest text-zinc-300">skrunklevevo</span>
-          <nav className="flex items-center gap-6 text-sm text-zinc-400">
-            <a href="#work" className="transition-colors hover:text-white">Work</a>
-            <a href={GITHUB} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-white">GitHub</a>
+          <span className="font-mono text-sm font-medium text-foreground">skrunklevevo</span>
+          <nav className="flex items-center gap-1">
+            <Button asChild variant="ghost" size="sm">
+              <a href="#work">Work</a>
+            </Button>
+            <Button asChild variant="ghost" size="sm">
+              <a href={GITHUB} target="_blank" rel="noopener noreferrer">
+                GitHub
+              </a>
+            </Button>
           </nav>
         </motion.header>
 
-        <main className="mx-auto max-w-7xl px-4 sm:px-8">
-          <motion.section className="pb-20 pt-16 sm:pb-32 sm:pt-28" variants={stagger} initial="hidden" animate="show">
-            <motion.p variants={rise} className="meta flex items-center gap-3">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
-              </span>
-              Engineering · UBC Okanagan · Year 1
-            </motion.p>
-            <motion.h1 variants={rise} className="mt-8 max-w-5xl font-serif text-5xl leading-[1.02] tracking-tight text-white sm:text-7xl lg:text-8xl">
-              I build apps, tools and mods <em className="text-zinc-500">to fix problems I actually have.</em>
+        <main className="mx-auto max-w-6xl px-4 sm:px-8">
+          <motion.section className="pb-16 pt-14 sm:pb-24 sm:pt-24" variants={stagger} initial="hidden" animate="show">
+            <motion.div variants={rise}>
+              <Badge variant="outline" className="gap-2 py-1">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+                </span>
+                Engineering · UBC Okanagan · Year 1
+              </Badge>
+            </motion.div>
+            <motion.h1 variants={rise} className="mt-6 max-w-4xl text-4xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-6xl">
+              I build apps, tools and mods <span className="text-muted-foreground">to fix problems I actually have.</span>
             </motion.h1>
-            <motion.p variants={rise} className="mt-8 max-w-xl text-base leading-relaxed text-zinc-400">
+            <motion.p variants={rise} className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">
               I'm skrunklevevo, a first-year engineering student in Kelowna building mobile-first apps, automation engines,
               custom tools and game mods.
             </motion.p>
-            <motion.div variants={rise} className="mt-10 flex flex-wrap gap-3">
+            <motion.div variants={rise} className="mt-8 flex flex-wrap gap-3">
               <LinkButton label="GitHub" href={GITHUB} icon="github" primary />
-              <a href="#work" className="pill">
-                Selected work
-              </a>
+              <Button asChild variant="outline">
+                <a href="#work">Selected work</a>
+              </Button>
             </motion.div>
           </motion.section>
 
           <section id="work" className="scroll-mt-8">
-            <motion.div
-              className="flex items-end justify-between border-t border-white/10 pt-6"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-80px' }}
-            >
-              <h2 className="font-serif text-4xl tracking-tight text-white sm:text-6xl">Selected work</h2>
-              <span className="meta hidden sm:block">2024 — 2026</span>
+            <div className="flex items-end justify-between border-t pt-6">
+              <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">Selected work</h2>
+              <span className="hidden font-mono text-xs text-muted-foreground sm:block">2024 — 2026</span>
+            </div>
+
+            <motion.div className="mt-8" {...reveal}>
+              <BentoGrid>
+                <ProjectCard project={p.auraflow} onOpen={setOpenId} className="md:col-span-2 md:row-span-2" />
+                <ProjectCard project={p.somefolio} onOpen={setOpenId} className="md:row-span-2" />
+                <ProjectCard project={p.planner} onOpen={setOpenId} />
+                <ProjectCard project={p.aeris} onOpen={setOpenId} className="md:col-span-2" />
+              </BentoGrid>
             </motion.div>
 
-            <motion.div className="mt-12 sm:mt-16" variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-80px' }}>
-              <FeaturedCard project={p.auraflow} onOpen={setOpenId} />
-            </motion.div>
-
-            <motion.div
-              className="mt-24 grid gap-x-10 gap-y-20 md:grid-cols-12 sm:mt-32"
-              variants={stagger}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, margin: '-80px' }}
-            >
-              <GalleryCard project={p.somefolio} onOpen={setOpenId} className="md:col-span-7" aspect="aspect-[16/11]" />
-              <GalleryCard project={p['aura-and-artifacts']} onOpen={setOpenId} className="md:col-span-5 md:mt-40" aspect="aspect-[4/5]" />
-              <GalleryCard project={p.formatnt} onOpen={setOpenId} className="md:col-span-5" aspect="aspect-[4/3]" />
-              <GalleryCard project={p.planner} onOpen={setOpenId} className="md:col-span-6 md:col-start-7 md:mt-24" aspect="aspect-[16/11]" />
-              <GalleryCard project={p.aeris} onOpen={setOpenId} className="md:col-span-8 md:col-start-3" aspect="aspect-[2/1]" />
+            <h3 className="mt-16 text-lg font-semibold tracking-tight text-foreground">More projects</h3>
+            <motion.div className="mt-4" {...reveal}>
+              <BentoGrid className="md:grid-cols-2">
+                <ProjectCard project={p['aura-and-artifacts']} onOpen={setOpenId} />
+                <ProjectCard project={p.formatnt} onOpen={setOpenId} />
+              </BentoGrid>
             </motion.div>
           </section>
 
-          <footer className="mt-32 flex flex-col gap-6 border-t border-white/10 py-10 sm:flex-row sm:items-end sm:justify-between">
+          <footer className="mt-24 flex flex-col gap-6 border-t py-10 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="font-serif text-3xl text-white sm:text-4xl">Let's build something.</p>
-              <a href={GITHUB} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-sm text-zinc-400 transition-colors hover:text-white">
-                github.com/skrunkleVEVO
-              </a>
+              <p className="text-2xl font-semibold tracking-tight text-foreground">Let's build something.</p>
+              <Button asChild variant="link" className="h-auto px-0 text-muted-foreground hover:text-foreground">
+                <a href={GITHUB} target="_blank" rel="noopener noreferrer">
+                  github.com/skrunkleVEVO
+                </a>
+              </Button>
             </div>
-            <p className="meta">© {new Date().getFullYear()} skrunklevevo · Kelowna, BC</p>
+            <p className="font-mono text-xs text-muted-foreground">© {new Date().getFullYear()} skrunklevevo · Kelowna, BC</p>
           </footer>
         </main>
 
