@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { forwardRef, useEffect, useState } from 'react';
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion';
 import { ArrowUpRight, FileText, X } from 'lucide-react';
 
@@ -18,6 +18,7 @@ const PROJECTS = [
     index: '01',
     title: 'AuraFlow',
     category: 'Android app',
+    group: 'mobile',
     year: '2026',
     tagline: 'Blocks short-form video feeds without breaking the rest of the app.',
     description:
@@ -40,6 +41,7 @@ const PROJECTS = [
     index: '02',
     title: 'SomeFolio',
     category: 'Media hub · PWA',
+    group: 'mobile',
     year: '2026',
     tagline: 'One offline-first library for anime, manga, games, film and books.',
     description:
@@ -62,6 +64,7 @@ const PROJECTS = [
     index: '03',
     title: 'Aura and Artifacts',
     category: 'Minecraft mod',
+    group: 'engineering',
     year: '2026',
     tagline: 'An ability skill tree and artifact weapons for Minecraft.',
     description:
@@ -89,6 +92,7 @@ const PROJECTS = [
     index: '04',
     title: 'formatnt',
     category: 'Desktop tool',
+    group: 'tools',
     year: '2026',
     tagline: 'Local media toolkit: download, convert, compress to an exact size, trim and crop.',
     description:
@@ -112,6 +116,7 @@ const PROJECTS = [
     index: '05',
     title: 'Planner & Scheduler',
     category: 'Canvas automation',
+    group: 'tools',
     year: '2026',
     tagline: 'Ranks tasks, runs focus sessions and pulls Canvas files automatically.',
     description:
@@ -134,6 +139,7 @@ const PROJECTS = [
     index: '06',
     title: 'Aeris Drone Suppression',
     category: 'APSC 169 · Engineering design',
+    group: 'engineering',
     year: '2025',
     tagline: 'An autonomous drone network that catches wildfires at ignition.',
     description:
@@ -152,10 +158,31 @@ const PROJECTS = [
 
 const byId = Object.fromEntries(PROJECTS.map((p) => [p.id, p]));
 
+/* ---------- Grid layout ---------- */
+
+const FILTERS = [
+  { id: 'all', label: 'All' },
+  { id: 'mobile', label: 'Mobile & Apps' },
+  { id: 'tools', label: 'Tools & Automation' },
+  { id: 'engineering', label: 'Engineering & Mods' },
+];
+
+// Bento order. "All" uses the hand-tuned spans below; a filtered view (two cards) splits 7 / 5.
+const GRID_ORDER = ['auraflow', 'somefolio', 'planner', 'aeris', 'aura-and-artifacts', 'formatnt'];
+const SPANS_ALL = {
+  auraflow: 'md:col-span-2 lg:col-span-7 lg:row-span-2',
+  somefolio: 'lg:col-span-5',
+  planner: 'lg:col-span-5',
+  aeris: 'md:col-span-2 lg:col-span-4',
+  'aura-and-artifacts': 'lg:col-span-4',
+  formatnt: 'lg:col-span-4',
+};
+const SPANS_FILTERED = ['lg:col-span-7', 'lg:col-span-5'];
 
 /* ---------- Motion presets ---------- */
 
 const ease = [0.22, 1, 0.36, 1];
+const spring = { type: 'spring', stiffness: 300, damping: 20 };
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } } };
 const rise = {
   hidden: { opacity: 0, y: 20 },
@@ -175,11 +202,11 @@ function GithubIcon(props) {
 
 const ICONS = { github: GithubIcon, external: ArrowUpRight, doc: FileText };
 
-function LinkButton({ label, href, icon, primary }) {
+function LinkButton({ label, href, icon, primary, size }) {
   const Glyph = ICONS[icon];
   if (!href) {
     return (
-      <Button asChild variant="outline" className="cursor-default border-dashed text-muted-foreground hover:bg-transparent hover:text-muted-foreground">
+      <Button asChild variant="outline" size={size} className="cursor-default border-dashed text-muted-foreground hover:bg-transparent hover:text-muted-foreground">
         <span title="Not public yet">
           {Glyph && <Glyph />}
           {label}
@@ -188,7 +215,7 @@ function LinkButton({ label, href, icon, primary }) {
     );
   }
   return (
-    <Button asChild variant={primary ? 'default' : 'outline'}>
+    <Button asChild variant={primary ? 'default' : 'outline'} size={size}>
       <a href={href} target="_blank" rel="noopener noreferrer">
         {Glyph && <Glyph />}
         {label}
@@ -351,44 +378,94 @@ function Cover({ project, imageIndex = 0 }) {
 
 /* ---------- Project cards ---------- */
 
-function ProjectCard({ project, onOpen, className }) {
+function FilterBar({ value, onChange }) {
   return (
-    <motion.div variants={rise} className={className}>
-      <MagicCard className="h-full rounded-2xl">
-        <button
-          type="button"
-          onClick={() => onOpen(project.id)}
-          className="flex h-full w-full flex-col rounded-2xl p-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          aria-label={`Open ${project.title}`}
-        >
-          <motion.div layoutId={`media-${project.id}`} className="relative min-h-0 flex-1 overflow-hidden rounded-xl bg-muted">
-            <div className="h-full w-full transition-transform duration-700 ease-out group-hover:scale-[1.03]">
-              <Cover project={project} />
-            </div>
-            {project.images?.length > 1 && (
-              <Badge variant="secondary" className="absolute right-3 top-3 bg-background/70 backdrop-blur">
-                {project.images.length} shots
-              </Badge>
-            )}
-          </motion.div>
+    <div className="sticky top-4 z-30 flex justify-center">
+      <div className="flex max-w-full gap-1 overflow-x-auto rounded-full border bg-background/70 p-1 shadow-lg shadow-black/40 backdrop-blur-xl [scrollbar-width:none]">
+        {FILTERS.map((f) => {
+          const active = f.id === value;
+          return (
+            <button
+              key={f.id}
+              type="button"
+              onClick={() => onChange(f.id)}
+              aria-pressed={active}
+              className={cn(
+                'relative shrink-0 whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                active ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground',
+              )}
+            >
+              {active && <motion.span layoutId="filter-pill" className="absolute inset-0 rounded-full bg-primary" transition={spring} />}
+              <span className="relative">{f.label}</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
-          <div className="flex flex-col gap-2 px-3 pb-3 pt-4">
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>{project.category}</span>
-              <span className="font-mono">{project.year}</span>
+// forwardRef so AnimatePresence's popLayout mode can measure exiting cards.
+const ProjectCard = forwardRef(function ProjectCard({ project, onOpen, className }, ref) {
+  const live = project.links.filter((l) => l.href);
+  const links = live.length ? live : project.links;
+
+  return (
+    <motion.div
+      ref={ref}
+      layout
+      initial={{ opacity: 0, y: 16, scale: 0.97 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+      whileHover={{ scale: 1.01, y: -4 }}
+      transition={spring}
+      className={cn('rounded-2xl transition-shadow duration-300 hover:shadow-2xl hover:shadow-emerald-500/5', className)}
+    >
+      <MagicCard className="h-full rounded-2xl">
+        <div className="flex h-full flex-col p-2">
+          <button
+            type="button"
+            onClick={() => onOpen(project.id)}
+            className="flex min-h-0 w-full flex-1 flex-col rounded-xl text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            aria-label={`Open ${project.title}`}
+          >
+            <motion.div layoutId={`media-${project.id}`} className="relative min-h-0 flex-1 overflow-hidden rounded-xl bg-muted">
+              <div className="h-full w-full transition-transform duration-700 ease-out group-hover:scale-[1.03]">
+                <Cover project={project} />
+              </div>
+              {project.images?.length > 1 && (
+                <Badge variant="secondary" className="absolute right-3 top-3 bg-background/70 backdrop-blur">
+                  {project.images.length} shots
+                </Badge>
+              )}
+            </motion.div>
+
+            <div className="flex flex-col gap-2 px-3 pb-3 pt-4">
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <span>{project.category}</span>
+                <span className="font-mono">{project.year}</span>
+              </div>
+              <div className="flex items-start justify-between gap-3">
+                <h3 className="text-lg font-semibold tracking-tight text-foreground sm:text-xl">{project.title}</h3>
+                <ArrowUpRight className="mt-1 size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
+              </div>
+              <p className="line-clamp-2 text-sm leading-relaxed text-zinc-300">{project.tagline}</p>
             </div>
-            <div className="flex items-start justify-between gap-3">
-              <h3 className="text-lg font-semibold tracking-tight text-foreground sm:text-xl">{project.title}</h3>
-              <ArrowUpRight className="mt-1 size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
+          </button>
+
+          <div className="flex flex-wrap items-center justify-between gap-3 px-3 pb-3">
+            <TechTags tech={project.tech} />
+            <div className="flex flex-wrap gap-2">
+              {links.map((l) => (
+                <LinkButton key={l.label} {...l} size="sm" />
+              ))}
             </div>
-            <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">{project.tagline}</p>
-            <TechTags tech={project.tech} className="mt-1" />
           </div>
-        </button>
+        </div>
       </MagicCard>
     </motion.div>
   );
-}
+});
 
 /* ---------- Expanded project ---------- */
 
@@ -486,7 +563,7 @@ function ProjectSheet({ project, onClose }) {
             <motion.h2 variants={rise} className="mt-2 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
               {project.title}
             </motion.h2>
-            <motion.p variants={rise} className="mt-5 text-base leading-relaxed text-muted-foreground">
+            <motion.p variants={rise} className="mt-5 text-base leading-relaxed text-zinc-300">
               {project.description}
             </motion.p>
             <motion.div variants={rise} className="mt-8 flex flex-wrap gap-3">
@@ -500,7 +577,7 @@ function ProjectSheet({ project, onClose }) {
             <h3 className="text-sm font-medium text-foreground">Highlights</h3>
             <ul className="mt-3 divide-y border-y">
               {project.highlights.map((h) => (
-                <li key={h} className="py-3 text-sm leading-relaxed text-muted-foreground">
+                <li key={h} className="py-3 text-sm leading-relaxed text-zinc-300">
                   {h}
                 </li>
               ))}
@@ -516,16 +593,16 @@ function ProjectSheet({ project, onClose }) {
 
 /* ---------- Page ---------- */
 
-const reveal = { variants: stagger, initial: 'hidden', whileInView: 'show', viewport: { once: true, margin: '-80px' } };
-
 export default function App() {
   const [openId, setOpenId] = useState(null);
+  const [filter, setFilter] = useState('all');
   const open = openId ? byId[openId] : null;
-  const p = byId;
+  const visible = GRID_ORDER.map((id) => byId[id]).filter((p) => filter === 'all' || p.group === filter);
 
   return (
     <MotionConfig reducedMotion="user" transition={{ duration: 0.6, ease }}>
-      <div className="relative min-h-screen overflow-x-hidden">
+      {/* overflow-x-clip (not hidden) so the sticky filter bar still sticks */}
+      <div className="relative min-h-screen overflow-x-clip">
         <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[40rem] bg-gradient-to-b from-emerald-500/[0.06] via-transparent to-transparent" aria-hidden="true" />
 
         <motion.header
@@ -579,22 +656,22 @@ export default function App() {
               <span className="hidden font-mono text-xs text-muted-foreground sm:block">2024 — 2026</span>
             </div>
 
-            <motion.div className="mt-8" {...reveal}>
-              <BentoGrid>
-                <ProjectCard project={p.auraflow} onOpen={setOpenId} className="md:col-span-2 md:row-span-2" />
-                <ProjectCard project={p.somefolio} onOpen={setOpenId} className="md:row-span-2" />
-                <ProjectCard project={p.planner} onOpen={setOpenId} />
-                <ProjectCard project={p.aeris} onOpen={setOpenId} className="md:col-span-2" />
-              </BentoGrid>
-            </motion.div>
+            <div className="mt-8">
+              <FilterBar value={filter} onChange={setFilter} />
+            </div>
 
-            <h3 className="mt-16 text-lg font-semibold tracking-tight text-foreground">More projects</h3>
-            <motion.div className="mt-4" {...reveal}>
-              <BentoGrid className="md:grid-cols-2">
-                <ProjectCard project={p['aura-and-artifacts']} onOpen={setOpenId} />
-                <ProjectCard project={p.formatnt} onOpen={setOpenId} />
-              </BentoGrid>
-            </motion.div>
+            <BentoGrid className="mt-8 auto-rows-[28rem] md:grid-cols-2 lg:auto-rows-[25rem] lg:grid-cols-12">
+              <AnimatePresence mode="popLayout" initial={false}>
+                {visible.map((project, i) => (
+                  <ProjectCard
+                    key={project.id}
+                    project={project}
+                    onOpen={setOpenId}
+                    className={filter === 'all' ? SPANS_ALL[project.id] : SPANS_FILTERED[i]}
+                  />
+                ))}
+              </AnimatePresence>
+            </BentoGrid>
           </section>
 
           <footer className="mt-24 flex flex-col gap-6 border-t py-10 sm:flex-row sm:items-end sm:justify-between">

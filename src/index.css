@@ -40,3 +40,9 @@
     @apply bg-emerald-400/25 text-white;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

@@ -52,6 +52,7 @@ export function MagicCard({
         className="pointer-events-none absolute inset-px rounded-[inherit] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
         style={{ background: spotlight, opacity: gradientOpacity }}
       />
+      <div className="pointer-events-none absolute inset-0 rounded-[inherit] border border-transparent transition-colors duration-300 group-hover:border-zinc-500/50" />
       <div className="relative h-full">{children}</div>
     </div>
   );
