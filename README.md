@@ -11,12 +11,12 @@ A personal and academic portfolio built with React, Vite and Tailwind CSS, deplo
 | Project images | `public/images/` (referenced as `images/<file>`) |
 | PDF reports | `public/reports/` (referenced as `reports/<file>`) |
 
-Each project accepts the following fields: `id`, `title`, `subtitle`, `category` (`Software & Apps`, `Games & Mods` or `Academic & Engineering`), `status`, `year`, `featured`, `eportfolio`, `techStack`, `summary`, `description`, `problem`, `solution`, `features`, `reflections`, `image`, `githubUrl`, `liveUrl` and `reportUrl`.
+Each project accepts: `id`, `code` (e.g. `SYS_01`), `title`, `subtitle`, `category`, `status` (`Active` gets the live indicator), `year`, `modes` (`["personal"]`, `["university"]` or both), `techStack`, `summary`, `problem`, `solution`, `architecture` (list of `{ layer, detail }`), `features`, `reflections`, optional `brief` (list of `"Head: text"` lines), `githubUrl`, `liveUrl` and `reportUrl`.
 
-- Leave a URL as `""` to hide its button.
-- If an image is missing, the card falls back to a gradient banner.
-- `"eportfolio": true` includes the project in the University ePortfolio view.
-- `"featured": true` sorts the project to the top.
+- Leave a URL as `""` to hide its button. A project with no links shows `SRC: PRIVATE`.
+- Report PDFs go in `public/reports/`. Until the file exists the card shows `PDF: PENDING`.
+- Bento placement per view lives in `LAYOUTS` in `src/components/BentoGrid.jsx`. Projects not listed there are appended as compact cells.
+- `?view=eportfolio` links straight to the University ePortfolio view.
 
 ## Local development
 

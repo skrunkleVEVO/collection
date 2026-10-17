@@ -4,102 +4,99 @@
 
 @layer base {
   html {
-    scroll-behavior: smooth;
     color-scheme: dark;
+    -webkit-tap-highlight-color: transparent;
   }
   body {
-    @apply bg-zinc-950 text-zinc-300;
+    @apply bg-zinc-950 font-sans text-zinc-300 antialiased;
+    /* Faint dot field across the whole page */
+    background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 18px 18px;
   }
   ::selection {
-    @apply bg-emerald-400/25 text-zinc-100;
+    @apply bg-emerald-400/25 text-zinc-50;
+  }
+  :focus-visible {
+    @apply outline outline-1 outline-offset-2 outline-emerald-400;
   }
   ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
   }
   ::-webkit-scrollbar-track {
-    @apply bg-zinc-950;
+    @apply bg-transparent;
   }
   ::-webkit-scrollbar-thumb {
-    @apply border-2 border-solid border-zinc-950 bg-zinc-800;
+    @apply bg-zinc-800;
   }
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-zinc-600;
+    @apply bg-zinc-700;
   }
 }
 
 @layer components {
-  /* Terminal-style metadata label, e.g. "// 00_OPERATOR" */
-  .label {
-    @apply font-mono text-[10px] uppercase tracking-[0.18em] text-zinc-500;
+  /* Monospace metadata, e.g. "// [SYS_01]" */
+  .meta {
+    @apply font-mono text-[10px] uppercase tracking-[0.16em] text-zinc-500;
   }
 
-  /* Tech badge */
-  .chip {
-    @apply inline-flex items-center border border-emerald-500/20 bg-emerald-500/10 px-1.5 py-0.5 font-mono text-[10.5px] uppercase tracking-wide text-emerald-400;
+  /* KEY: VALUE spec tag, e.g. "STATUS: ACTIVE" */
+  .spec-tag {
+    @apply inline-flex max-w-full flex-wrap items-center gap-1 border border-zinc-800 bg-zinc-950/70 px-1.5 py-[3px] font-mono text-[10px] uppercase leading-none tracking-wider text-zinc-400;
+  }
+  .spec-tag > b {
+    @apply font-medium text-zinc-200;
   }
 
-  /* Neutral skill tag */
-  .tag {
-    @apply inline-flex items-center border border-zinc-800 bg-zinc-900/60 px-1.5 py-0.5 font-mono text-[11px] text-zinc-400 transition-colors hover:border-zinc-600 hover:text-zinc-200;
+  /* Outbound link control */
+  .out-link {
+    @apply relative z-10 inline-flex items-center gap-1.5 border border-zinc-800 bg-zinc-900/80 px-2 py-1 font-mono text-[10.5px] uppercase tracking-wider text-zinc-300 transition-colors hover:border-emerald-400/60 hover:text-emerald-300;
+  }
+  .out-link-off {
+    @apply relative z-10 inline-flex cursor-not-allowed items-center gap-1.5 border border-dashed border-zinc-800 px-2 py-1 font-mono text-[10.5px] uppercase tracking-wider text-zinc-600;
   }
 
-  .link-btn {
-    @apply inline-flex items-center gap-1.5 border border-zinc-800 bg-zinc-900 px-2.5 py-1 font-mono text-[11px] uppercase tracking-wider text-zinc-300 transition-colors hover:border-zinc-500 hover:text-zinc-100 focus:outline-none focus-visible:border-emerald-400 focus-visible:text-emerald-400;
+  /* Bento cell with a cursor-tracked emerald spotlight */
+  .cell {
+    @apply relative isolate overflow-hidden rounded-sm border border-zinc-800 bg-zinc-950/90 transition-colors duration-300;
+    --mx: 50%;
+    --my: 50%;
   }
-
-  /* 1px engineering grid behind the hero */
-  .grid-bg {
-    background-image:
-      linear-gradient(to right, rgb(39 39 42 / 0.5) 1px, transparent 1px),
-      linear-gradient(to bottom, rgb(39 39 42 / 0.5) 1px, transparent 1px);
-    background-size: 48px 48px;
-    mask-image: linear-gradient(to bottom, black 40%, transparent);
-  }
-
-  /* Diagonal hatching for image-less project banners */
-  .hatch {
-    background-color: rgb(9 9 11);
-    background-image: repeating-linear-gradient(135deg, rgb(39 39 42 / 0.55) 0 1px, transparent 1px 9px);
-  }
-
-  /* Registration-mark corners; the element needs `relative` */
-  .brackets::before,
-  .brackets::after {
+  .cell::before {
     content: '';
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    pointer-events: none;
-    transition: border-color 0.2s;
+    @apply pointer-events-none absolute inset-0 -z-10 opacity-0 transition-opacity duration-300;
+    background: radial-gradient(420px circle at var(--mx) var(--my), rgba(52, 211, 153, 0.09), transparent 60%);
   }
-  .brackets::before {
-    top: -1px;
-    left: -1px;
-    border-top: 1px solid rgb(113 113 122);
-    border-left: 1px solid rgb(113 113 122);
+  .cell::after {
+    /* Border glow that follows the cursor */
+    content: '';
+    @apply pointer-events-none absolute inset-0 rounded-sm opacity-0 transition-opacity duration-300;
+    padding: 1px;
+    background: radial-gradient(260px circle at var(--mx) var(--my), rgba(52, 211, 153, 0.55), transparent 65%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
   }
-  .brackets::after {
-    right: -1px;
-    bottom: -1px;
-    border-right: 1px solid rgb(113 113 122);
-    border-bottom: 1px solid rgb(113 113 122);
-  }
-  .group:hover .brackets::before,
-  .group:hover .brackets::after,
-  .brackets.group:hover::before,
-  .brackets.group:hover::after {
-    border-color: rgb(52 211 153);
+  .cell:hover::before,
+  .cell:hover::after,
+  .cell:focus-within::before {
+    @apply opacity-100;
   }
 
-  .cursor-blink {
-    animation: cursor-blink 1.1s steps(1) infinite;
+  /* Blueprint grid for the spec-sheet drawer */
+  .blueprint {
+    background-color: #08090b;
+    background-image:
+      linear-gradient(rgba(52, 211, 153, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(52, 211, 153, 0.05) 1px, transparent 1px),
+      linear-gradient(rgba(52, 211, 153, 0.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(52, 211, 153, 0.022) 1px, transparent 1px);
+    background-size: 80px 80px, 80px 80px, 16px 16px, 16px 16px;
   }
-}
 
-@keyframes cursor-blink {
-  50% {
-    opacity: 0;
+  /* Diagonal hatch fill for placeholder / empty regions */
+  .hatch {
+    background-image: repeating-linear-gradient(-45deg, rgba(63, 63, 70, 0.35) 0 1px, transparent 1px 7px);
   }
 }
 
@@ -110,6 +107,5 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
 }
