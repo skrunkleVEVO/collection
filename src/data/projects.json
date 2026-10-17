@@ -21,8 +21,34 @@
     ],
     "reflections": "Working with the Accessibility Service meant designing around UI structures I don't control. When a platform ships an update, detection can break, so the detection rules need to be isolated, easy to update and covered by tests on real view dumps. It also raised a responsibility question: an app with accessibility permissions must be transparent about what it reads and must never collect it.",
     "image": "images/auraflow.png",
-    "githubUrl": "https://github.com/YOUR_GITHUB_USERNAME/auraflow",
+    "githubUrl": "https://github.com/skrunkleVEVO/AuraFLow",
     "liveUrl": "",
+    "reportUrl": ""
+  },
+  {
+    "id": "somefolio",
+    "title": "SomeFolio",
+    "subtitle": "Offline-first media tracker PWA",
+    "category": "Software & Apps",
+    "status": "Ongoing",
+    "year": "2026",
+    "featured": true,
+    "eportfolio": false,
+    "techStack": ["React 19", "Vite", "Tailwind v4", "PWA", "Firebase"],
+    "summary": "Mobile-first tracker for anime, manga, games, movies, shows and books with live search, ratings, notes and a \"what's next?\" spinner.",
+    "description": "A mobile-first, dark-mode tracker for anime, manga, games, movies/TV and books. It is installable as a PWA, works offline and can optionally sync across devices through Firebase on the free Spark plan.",
+    "problem": "Tracking what you watch, read and play usually means a different site for every medium, each with its own account, and none of them work offline.",
+    "solution": "One library for every medium, backed by free public APIs (AniList, Open Library, TVmaze, Wikipedia) for live search, stored locally by default, with optional Firestore sync that merges edits per title.",
+    "features": [
+      "Live search across AniList, Open Library, TVmaze and Wikipedia, with no API keys required",
+      "Franchise stacking that groups split series into one hub card",
+      "Half-star ratings, custom vibe tags, auto-saving notes and a random \"what's next?\" spin",
+      "Workbox service worker for offline use, plus JSON export/import and optional Firestore sync"
+    ],
+    "reflections": "Designing for offline first changed how I handled data: every edit had to be safe to make locally and merge later, which led to per-title last-write-wins sync rather than whole-library overwrites.",
+    "image": "images/somefolio.png",
+    "githubUrl": "https://github.com/skrunkleVEVO/SomeFolio",
+    "liveUrl": "https://skrunklevevo.github.io/SomeFolio/",
     "reportUrl": ""
   },
   {
@@ -203,8 +229,8 @@
     ],
     "reflections": "Treating the portfolio as a product rather than a document made me think about the reader: what a recruiter and an instructor each need to find, and how quickly.",
     "image": "images/eportfolio.png",
-    "githubUrl": "https://github.com/YOUR_GITHUB_USERNAME/portfolio",
-    "liveUrl": "https://YOUR_GITHUB_USERNAME.github.io/portfolio/",
+    "githubUrl": "https://github.com/skrunkleVEVO/collection",
+    "liveUrl": "https://skrunklevevo.github.io/collection/",
     "reportUrl": ""
   }
 ]

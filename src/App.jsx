@@ -9,31 +9,31 @@ import profile from './data/profile.json';
 const CATEGORIES = ['All Projects', 'Software & Apps', 'Games & Mods', 'Academic & Engineering'];
 
 const VIEWS = {
-  personal: { label: 'Personal Projects', heading: 'Projects', blurb: profile.bio },
-  eportfolio: { label: 'University ePortfolio', heading: 'ePortfolio', blurb: profile.eportfolioIntro },
+  personal: { label: 'Personal', code: 'MODE::PERSONAL', heading: 'Project Index', blurb: profile.bio },
+  eportfolio: { label: 'ePortfolio', code: 'MODE::EPORTFOLIO', heading: 'ePortfolio Index', blurb: profile.eportfolioIntro },
 };
 
-const CATEGORY_STYLES = {
-  'Software & Apps': {
-    badge: 'bg-sky-500/15 text-sky-300 ring-sky-400/30',
-    banner: 'from-sky-500/40 via-indigo-500/25 to-ink-800',
-    glyph: '</>',
-  },
-  'Games & Mods': {
-    badge: 'bg-emerald-500/15 text-emerald-300 ring-emerald-400/30',
-    banner: 'from-emerald-500/40 via-teal-500/25 to-ink-800',
-    glyph: '▲▼',
-  },
-  'Academic & Engineering': {
-    badge: 'bg-amber-500/15 text-amber-300 ring-amber-400/30',
-    banner: 'from-amber-500/40 via-orange-500/25 to-ink-800',
-    glyph: '⌬',
-  },
+const CATEGORY_GLYPHS = {
+  'Software & Apps': '</>',
+  'Games & Mods': '▲▼',
+  'Academic & Engineering': '⌬',
 };
+
+// "Software & Apps" -> "SOFTWARE_APPS"
+const toCode = (text) =>
+  text
+    .toUpperCase()
+    .replace(/ENGINEERING/g, 'ENG')
+    .replace(/[^A-Z0-9]+/g, '_')
+    .replace(/^_|_$/g, '');
+
+const pad = (n) => String(n).padStart(2, '0');
 
 // Relative paths in the JSON (e.g. "images/x.png") resolve against Vite's base,
 // so they work both locally and under /<repo>/ on GitHub Pages.
 const asset = (path) => (!path || /^https?:\/\//.test(path) ? path : `${import.meta.env.BASE_URL}${path}`);
+
+const githubHandle = profile.githubUrl?.split('/').filter(Boolean).pop();
 
 /* ------------------------------------------------------------------ */
 /* Icons                                                               */
@@ -51,24 +51,24 @@ const Icon = {
     </svg>
   ),
   mail: (p) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...p}>
-      <rect x="2" y="4" width="20" height="16" rx="2" />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" aria-hidden="true" {...p}>
+      <rect x="2" y="4" width="20" height="16" />
       <path d="m22 7-10 6L2 7" />
     </svg>
   ),
   external: (p) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...p}>
-      <path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" aria-hidden="true" {...p}>
+      <path d="M7 17 17 7M8 7h9v9" />
     </svg>
   ),
   file: (p) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...p}>
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-      <path d="M14 2v6h6M9 13h6M9 17h6" />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" aria-hidden="true" {...p}>
+      <path d="M14 2H5v20h14V7z" />
+      <path d="M14 2v5h5M9 13h6M9 17h6" />
     </svg>
   ),
   close: (p) => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true" {...p}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" aria-hidden="true" {...p}>
       <path d="M18 6 6 18M6 6l12 12" />
     </svg>
   ),
@@ -78,62 +78,75 @@ const Icon = {
 /* Small building blocks                                               */
 /* ------------------------------------------------------------------ */
 
-function CategoryBadge({ category }) {
-  const style = CATEGORY_STYLES[category]?.badge ?? 'bg-white/10 text-slate-300 ring-white/20';
+function StatusIndicator({ status }) {
+  const active = status === 'Ongoing';
   return (
-    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold ring-1 ring-inset ${style}`}>
-      {category}
+    <span
+      className={`inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.16em] ${
+        active ? 'text-emerald-400' : 'text-zinc-500'
+      }`}
+    >
+      <span className="relative flex h-1.5 w-1.5">
+        {active && <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />}
+        <span
+          className={`relative inline-flex h-1.5 w-1.5 rounded-full ${
+            active ? 'bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.9)]' : 'bg-zinc-600'
+          }`}
+        />
+      </span>
+      {active ? 'Active' : status}
     </span>
   );
 }
 
-function StatusDot({ status }) {
-  const ongoing = status === 'Ongoing';
-  return (
-    <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-400">
-      <span className={`h-1.5 w-1.5 rounded-full ${ongoing ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'}`} />
-      {status}
-    </span>
-  );
+function Clock() {
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  return <time className="tabular-nums">{now.toLocaleTimeString('en-GB', { hour12: false })}</time>;
 }
 
-// Shows the project image; falls back to a category gradient if it's missing or fails to load.
+// Shows the project image; falls back to a hatched placeholder if it's missing or fails to load.
 function Banner({ project, className = '' }) {
   const [failed, setFailed] = useState(false);
-  const style = CATEGORY_STYLES[project.category];
   const showImage = project.image && !failed;
 
   return (
-    <div className={`relative overflow-hidden bg-gradient-to-br ${style?.banner ?? 'from-ink-700 to-ink-800'} ${className}`}>
+    <div className={`relative overflow-hidden border-b border-zinc-800/80 ${className}`}>
       {showImage ? (
         <img
           src={asset(project.image)}
           alt=""
           loading="lazy"
           onError={() => setFailed(true)}
-          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+          className="h-full w-full object-cover opacity-80 grayscale transition duration-500 group-hover:opacity-100 group-hover:grayscale-0"
         />
       ) : (
-        <div className="flex h-full w-full items-center justify-center">
-          <span className="select-none font-mono text-4xl font-bold text-white/25">{style?.glyph ?? '◆'}</span>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.12),transparent_60%)]" />
+        <div className="hatch flex h-full w-full items-center justify-center">
+          <span className="select-none font-mono text-4xl font-bold text-zinc-700 transition-colors duration-300 group-hover:text-zinc-400">
+            {CATEGORY_GLYPHS[project.category] ?? '◆'}
+          </span>
+          <span className="label absolute left-3 top-2.5 text-zinc-600">ID::{project.id}</span>
+          <span className="label absolute bottom-2.5 right-3 text-zinc-600">IMG_PENDING</span>
         </div>
       )}
     </div>
   );
 }
 
-function ProjectLinks({ project, size = 'sm' }) {
+function ProjectLinks({ project }) {
   const links = [
-    project.githubUrl && { href: project.githubUrl, label: 'GitHub', icon: Icon.github },
-    project.liveUrl && { href: project.liveUrl, label: 'Live Demo', icon: Icon.external },
-    project.reportUrl && { href: asset(project.reportUrl), label: 'PDF Report', icon: Icon.file },
+    project.githubUrl && { href: project.githubUrl, label: 'Source', icon: Icon.github },
+    project.liveUrl && { href: project.liveUrl, label: 'Live', icon: Icon.external },
+    project.reportUrl && { href: asset(project.reportUrl), label: 'Report', icon: Icon.file },
   ].filter(Boolean);
 
   if (!links.length) return null;
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-1.5">
       {links.map(({ href, label, icon: LinkIcon }) => (
         <a
           key={label}
@@ -141,9 +154,9 @@ function ProjectLinks({ project, size = 'sm' }) {
           target="_blank"
           rel="noopener noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className={`link-btn ${size === 'lg' ? 'px-4 py-2 text-sm' : ''}`}
+          className="link-btn"
         >
-          <LinkIcon className="h-3.5 w-3.5" />
+          <LinkIcon className="h-3 w-3" />
           {label}
         </a>
       ))}
@@ -152,10 +165,79 @@ function ProjectLinks({ project, size = 'sm' }) {
 }
 
 /* ------------------------------------------------------------------ */
+/* Navigation                                                          */
+/* ------------------------------------------------------------------ */
+
+function ViewToggle({ view, onChange }) {
+  return (
+    <div role="group" aria-label="Portfolio view" className="flex border border-zinc-800 bg-zinc-900/60 p-0.5">
+      {Object.entries(VIEWS).map(([key, { label }]) => {
+        const selected = view === key;
+        return (
+          <button
+            key={key}
+            type="button"
+            aria-pressed={selected}
+            onClick={() => onChange(key)}
+            className={`px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.16em] transition-colors focus:outline-none focus-visible:text-emerald-400 ${
+              selected ? 'bg-zinc-100 text-zinc-950' : 'text-zinc-500 hover:text-zinc-200'
+            }`}
+          >
+            {label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function NavBar({ view, onViewChange }) {
+  return (
+    <nav className="sticky top-0 z-40 border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-md">
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+        <a href="#index" className="flex items-center gap-2.5 font-mono text-xs text-zinc-100">
+          <span className="h-2.5 w-2.5 bg-emerald-400" aria-hidden="true" />
+          <span className="font-semibold">{githubHandle || profile.name}</span>
+          <span className="hidden text-zinc-600 sm:inline">/ portfolio</span>
+        </a>
+
+        <div className="hidden items-center gap-6 md:flex">
+          {[
+            ['#index', '00', 'Index'],
+            ['#modules', '01', 'Modules'],
+            ['#contact', '02', 'Contact'],
+          ].map(([href, n, label]) => (
+            <a key={href} href={href} className="label transition-colors hover:text-zinc-100">
+              <span className="text-zinc-700">{n}</span> {label}
+            </a>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-4">
+          <span className="label hidden lg:inline">
+            LOCAL <Clock />
+          </span>
+          <ViewToggle view={view} onChange={onViewChange} />
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* Hero                                                                */
 /* ------------------------------------------------------------------ */
 
-function Hero({ view }) {
+function SpecRow({ k, children }) {
+  return (
+    <div className="flex items-center justify-between gap-4 border-b border-zinc-800/80 py-2.5 last:border-b-0">
+      <dt className="label">{k}</dt>
+      <dd className="text-right font-mono text-xs text-zinc-200">{children}</dd>
+    </div>
+  );
+}
+
+function Hero({ view, stats }) {
   const socials = [
     profile.githubUrl && { href: profile.githubUrl, label: 'GitHub', icon: Icon.github },
     profile.linkedinUrl && { href: profile.linkedinUrl, label: 'LinkedIn', icon: Icon.linkedin },
@@ -164,42 +246,80 @@ function Hero({ view }) {
   ].filter(Boolean);
 
   return (
-    <header className="relative overflow-hidden border-b border-white/5">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(124,156,255,0.18),transparent_55%),radial-gradient(ellipse_at_bottom_right,rgba(16,185,129,0.10),transparent_50%)]" />
-      <div className="relative mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 md:py-24 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
-        <div className="animate-fade-up">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-accent">{profile.role}</p>
-          <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl">
-            {profile.name}
-          </h1>
-          <p className="mt-5 max-w-xl text-base leading-relaxed text-slate-400 sm:text-lg">{VIEWS[view].blurb}</p>
-          {profile.location && <p className="mt-3 text-sm text-slate-500">{profile.location}</p>}
+    <header id="index" className="relative scroll-mt-14 overflow-hidden border-b border-zinc-800/80">
+      <div className="grid-bg pointer-events-none absolute inset-0" aria-hidden="true" />
 
-          <div className="mt-8 flex flex-wrap gap-3">
-            {socials.map(({ href, label, icon: SocialIcon }) => (
-              <a
-                key={label}
-                href={href}
-                target={href.startsWith('mailto:') ? undefined : '_blank'}
-                rel="noopener noreferrer"
-                className="link-btn px-4 py-2 text-sm"
-              >
-                <SocialIcon className="h-4 w-4" />
-                {label}
-              </a>
-            ))}
-          </div>
+      <div className="relative mx-auto max-w-6xl px-4 pb-14 pt-12 sm:px-6 md:pt-16">
+        <div className="label flex items-center justify-between">
+          <span>// 00_Operator</span>
+          <span className="text-emerald-400/80">{VIEWS[view].code}</span>
         </div>
 
-        <div className="animate-fade-up rounded-2xl border border-white/10 bg-ink-900/70 p-6 backdrop-blur [animation-delay:120ms]">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-400">Skills inventory</h2>
-          <dl className="mt-5 space-y-5">
-            {profile.skills.map(({ group, items }) => (
+        <div className="mt-10 grid gap-12 lg:grid-cols-[1.55fr_1fr] lg:gap-16">
+          <div className="animate-fade-up">
+            <p className="font-mono text-xs text-emerald-400">
+              <span className="text-zinc-600">$</span> whoami
+            </p>
+            <h1 className="mt-4 text-5xl font-bold leading-[0.92] tracking-tighter text-zinc-100 sm:text-6xl md:text-7xl">
+              {profile.name}
+              <span className="cursor-blink text-emerald-400">_</span>
+            </h1>
+            <p className="mt-5 font-mono text-xs uppercase tracking-[0.14em] text-zinc-400">{profile.role}</p>
+            <p className="mt-8 max-w-xl border-l border-zinc-800 pl-5 text-[15px] leading-relaxed text-zinc-400">
+              {VIEWS[view].blurb}
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-2">
+              {socials.map(({ href, label, icon: SocialIcon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target={href.startsWith('mailto:') ? undefined : '_blank'}
+                  rel="noopener noreferrer"
+                  className="link-btn px-3 py-1.5"
+                >
+                  <SocialIcon className="h-3.5 w-3.5" />
+                  {label}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <aside
+            className="brackets relative animate-fade-up self-start border border-zinc-800/80 bg-zinc-900/60 [animation-delay:120ms]"
+            aria-label="Profile summary"
+          >
+            <div className="flex items-center justify-between border-b border-zinc-800/80 px-4 py-2.5">
+              <span className="label text-zinc-400">Spec_Sheet</span>
+              <span className="label">REV.{new Date().getFullYear()}</span>
+            </div>
+            <dl className="px-4 py-1">
+              {githubHandle && <SpecRow k="Handle">@{githubHandle}</SpecRow>}
+              {profile.location && <SpecRow k="Location">{profile.location}</SpecRow>}
+              <SpecRow k="Modules">{pad(stats.total)}</SpecRow>
+              <SpecRow k="Active_Builds">
+                <span className="inline-flex items-center gap-2">
+                  <StatusIndicator status="Ongoing" />
+                  <span>{pad(stats.active)}</span>
+                </span>
+              </SpecRow>
+              <SpecRow k="Shipped">{pad(stats.total - stats.active)}</SpecRow>
+              <SpecRow k="Last_Update">{stats.latestYear}</SpecRow>
+            </dl>
+          </aside>
+        </div>
+
+        <div className="mt-14 border-t border-zinc-800/80 pt-6">
+          <p className="label">// Skills_Inventory</p>
+          <dl className="mt-5 grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
+            {profile.skills.map(({ group, items }, i) => (
               <div key={group}>
-                <dt className="text-xs font-medium text-slate-500">{group}</dt>
-                <dd className="mt-2 flex flex-wrap gap-1.5">
+                <dt className="font-mono text-[11px] text-zinc-500">
+                  <span className="text-zinc-700">{pad(i + 1)}.</span> {group}
+                </dt>
+                <dd className="mt-2.5 flex flex-wrap gap-1">
                   {items.map((skill) => (
-                    <span key={skill} className="chip">
+                    <span key={skill} className="tag">
                       {skill}
                     </span>
                   ))}
@@ -217,48 +337,14 @@ function Hero({ view }) {
 /* Controls                                                            */
 /* ------------------------------------------------------------------ */
 
-function ViewToggle({ view, onChange }) {
-  const isEportfolio = view === 'eportfolio';
-  return (
-    <div className="flex items-center gap-3">
-      <button
-        type="button"
-        onClick={() => onChange('personal')}
-        className={`text-sm font-semibold transition ${!isEportfolio ? 'text-white' : 'text-slate-500 hover:text-slate-300'}`}
-      >
-        {VIEWS.personal.label}
-      </button>
-      <button
-        type="button"
-        role="switch"
-        aria-checked={isEportfolio}
-        aria-label="Toggle University ePortfolio view"
-        onClick={() => onChange(isEportfolio ? 'personal' : 'eportfolio')}
-        className={`relative h-7 w-14 shrink-0 rounded-full border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
-          isEportfolio ? 'border-amber-400/40 bg-amber-500/30' : 'border-accent/40 bg-accent/30'
-        }`}
-      >
-        <span
-          className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform duration-300 ${
-            isEportfolio ? 'translate-x-[30px]' : 'translate-x-0.5'
-          }`}
-        />
-      </button>
-      <button
-        type="button"
-        onClick={() => onChange('eportfolio')}
-        className={`text-sm font-semibold transition ${isEportfolio ? 'text-white' : 'text-slate-500 hover:text-slate-300'}`}
-      >
-        {VIEWS.eportfolio.label}
-      </button>
-    </div>
-  );
-}
-
 function FilterTabs({ active, counts, onChange }) {
   return (
-    <div role="tablist" aria-label="Filter projects by category" className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
-      {CATEGORIES.map((cat) => {
+    <div
+      role="tablist"
+      aria-label="Filter projects by category"
+      className="-mx-4 flex overflow-x-auto border-y border-zinc-800/80 px-4 sm:mx-0 sm:border-x sm:px-0"
+    >
+      {CATEGORIES.map((cat, i) => {
         const selected = active === cat;
         const disabled = counts[cat] === 0;
         return (
@@ -269,16 +355,14 @@ function FilterTabs({ active, counts, onChange }) {
             aria-selected={selected}
             disabled={disabled}
             onClick={() => onChange(cat)}
-            className={`flex shrink-0 items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
-              selected
-                ? 'border-accent/60 bg-accent/15 text-white'
-                : 'border-white/10 bg-white/[0.03] text-slate-400 hover:border-white/20 hover:text-slate-200'
-            } disabled:cursor-not-allowed disabled:opacity-40`}
+            className={`relative flex shrink-0 items-center gap-2 border-r border-zinc-800/80 px-4 py-3 font-mono text-[11px] uppercase tracking-wider transition-colors last:border-r-0 focus:outline-none focus-visible:bg-zinc-900 ${
+              selected ? 'bg-zinc-900/60 text-zinc-100' : 'text-zinc-500 hover:bg-zinc-900/40 hover:text-zinc-200'
+            } disabled:cursor-not-allowed disabled:opacity-30`}
           >
-            {cat}
-            <span className={`rounded-full px-1.5 text-[11px] ${selected ? 'bg-accent/30 text-white' : 'bg-white/10 text-slate-400'}`}>
-              {counts[cat]}
-            </span>
+            {selected && <span className="absolute inset-x-0 -bottom-px h-px bg-emerald-400" />}
+            <span className="text-zinc-700">{pad(i)}</span>
+            {toCode(cat)}
+            <span className={selected ? 'text-emerald-400' : 'text-zinc-600'}>[{pad(counts[cat])}]</span>
           </button>
         );
       })}
@@ -290,11 +374,12 @@ function FilterTabs({ active, counts, onChange }) {
 /* Project card + drawer                                               */
 /* ------------------------------------------------------------------ */
 
-function ProjectCard({ project, onOpen, index }) {
+function ProjectCard({ project, onOpen, index, total }) {
   return (
     <article
       role="button"
       tabIndex={0}
+      aria-label={`${project.title}: open details`}
       onClick={() => onOpen(project)}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
@@ -303,40 +388,53 @@ function ProjectCard({ project, onOpen, index }) {
         }
       }}
       style={{ animationDelay: `${index * 50}ms` }}
-      className="group flex animate-fade-up cursor-pointer flex-col overflow-hidden rounded-2xl border border-white/10 bg-ink-900 transition hover:-translate-y-1 hover:border-white/20 hover:shadow-2xl hover:shadow-accent/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+      className="group brackets relative flex animate-fade-up cursor-pointer flex-col border border-zinc-800/80 bg-zinc-900/60 transition duration-200 ease-out hover:-translate-x-1 hover:-translate-y-1 hover:border-zinc-500 hover:shadow-[6px_6px_0_0_#27272a] focus:outline-none focus-visible:border-emerald-400"
     >
-      <Banner project={project} className="aspect-[16/9]" />
-      <div className="flex flex-1 flex-col p-5">
-        <div className="flex items-center justify-between gap-2">
-          <CategoryBadge category={project.category} />
-          <StatusDot status={project.status} />
+      <div className="flex items-center justify-between border-b border-zinc-800/80 px-4 py-2.5">
+        <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-zinc-500">
+          <span className="text-zinc-300">
+            [{pad(index + 1)}/{pad(total)}]
+          </span>{' '}
+          {toCode(project.category)}
+        </span>
+        <StatusIndicator status={project.status} />
+      </div>
+
+      <Banner project={project} className="aspect-[16/8]" />
+
+      <div className="flex flex-1 flex-col p-4">
+        <div className="flex items-start justify-between gap-3">
+          <h3 className="text-lg font-bold leading-tight tracking-tight text-zinc-100">{project.title}</h3>
+          {project.featured && <span className="label mt-1 shrink-0 text-emerald-400">★ Pinned</span>}
         </div>
-        <h3 className="mt-3 text-lg font-bold leading-snug text-white">{project.title}</h3>
-        {project.subtitle && <p className="text-sm text-slate-500">{project.subtitle}</p>}
-        <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-slate-400">{project.summary}</p>
-        <div className="mt-4 flex flex-wrap gap-1.5">
+        {project.subtitle && <p className="mt-1 font-mono text-[11px] text-zinc-500">{project.subtitle}</p>}
+        <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-zinc-400">{project.summary}</p>
+        <div className="mt-4 flex flex-wrap gap-1">
           {project.techStack.map((tech) => (
             <span key={tech} className="chip">
               {tech}
             </span>
           ))}
         </div>
-        <div className="mt-auto flex items-end justify-between gap-3 pt-5">
-          <ProjectLinks project={project} />
-          <span className="shrink-0 text-xs font-medium text-accent opacity-0 transition group-hover:opacity-100">
-            Details →
-          </span>
-        </div>
+      </div>
+
+      <div className="flex items-center justify-between gap-3 border-t border-zinc-800/80 px-4 py-2.5">
+        <ProjectLinks project={project} />
+        <span className="label ml-auto shrink-0 transition-colors group-hover:text-emerald-400">
+          {project.year} · Open →
+        </span>
       </div>
     </article>
   );
 }
 
-function DrawerSection({ title, children }) {
+function DrawerSection({ n, title, children }) {
   return (
-    <section className="border-t border-white/5 pt-6">
-      <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500">{title}</h3>
-      <div className="mt-3 text-[15px] leading-relaxed text-slate-300">{children}</div>
+    <section className="border-t border-zinc-800/80 pt-6">
+      <h3 className="label">
+        <span className="text-emerald-400">{pad(n)}</span> // {toCode(title)}
+      </h3>
+      <div className="mt-3 text-[15px] leading-relaxed text-zinc-300">{children}</div>
     </section>
   );
 }
@@ -359,90 +457,106 @@ function ProjectDrawer({ project, open, onClose, view }) {
   if (!project) return null;
 
   // In the ePortfolio view, reflections come first since that's what assessors read.
-  const reflections = project.reflections && (
-    <DrawerSection key="reflections" title="Engineering reflections">
-      <p className="border-l-2 border-amber-400/50 pl-4 italic text-slate-300">{project.reflections}</p>
-    </DrawerSection>
-  );
+  const reflections = project.reflections && {
+    key: 'reflections',
+    title: 'Engineering reflections',
+    content: <p className="border-l border-emerald-400/60 pl-4 text-zinc-300">{project.reflections}</p>,
+  };
 
   const body = [
-    project.problem && (
-      <DrawerSection key="problem" title="Problem statement">
-        <p>{project.problem}</p>
-      </DrawerSection>
-    ),
-    project.solution && (
-      <DrawerSection key="solution" title="Solution">
-        <p>{project.solution}</p>
-      </DrawerSection>
-    ),
-    project.features?.length > 0 && (
-      <DrawerSection key="features" title="Key features">
+    project.problem && { key: 'problem', title: 'Problem statement', content: <p>{project.problem}</p> },
+    project.solution && { key: 'solution', title: 'Solution', content: <p>{project.solution}</p> },
+    project.features?.length > 0 && {
+      key: 'features',
+      title: 'Key features',
+      content: (
         <ul className="space-y-2">
-          {project.features.map((f) => (
+          {project.features.map((f, i) => (
             <li key={f} className="flex gap-3">
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+              <span className="mt-[3px] shrink-0 font-mono text-[11px] text-zinc-600">{pad(i + 1)}</span>
               <span>{f}</span>
             </li>
           ))}
         </ul>
-      </DrawerSection>
-    ),
+      ),
+    },
   ];
+
+  const sections = (view === 'eportfolio' ? [reflections, ...body] : [...body, reflections]).filter(Boolean);
 
   return (
     <div className={`fixed inset-0 z-50 ${open ? '' : 'pointer-events-none'}`}>
       <div
         onClick={onClose}
-        className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${open ? 'opacity-100' : 'opacity-0'}`}
+        className={`absolute inset-0 bg-zinc-950/70 backdrop-blur-sm transition-opacity duration-300 ${open ? 'opacity-100' : 'opacity-0'}`}
       />
       <aside
         role="dialog"
         aria-modal="true"
         aria-labelledby="drawer-title"
-        className={`absolute inset-y-0 right-0 flex w-full max-w-xl flex-col bg-ink-900 shadow-2xl ring-1 ring-white/10 transition-transform duration-300 ease-out ${
+        className={`absolute inset-y-0 right-0 flex w-full max-w-xl flex-col border-l border-zinc-800 bg-zinc-950 transition-transform duration-300 ease-out ${
           open ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        <div className="relative">
-          <Banner project={project} className="aspect-[16/7]" />
-          <div className="absolute inset-0 bg-gradient-to-t from-ink-900 via-ink-900/30 to-transparent" />
+        <div className="flex h-12 shrink-0 items-center justify-between border-b border-zinc-800/80 px-5">
+          <span className="label">
+            File // <span className="text-zinc-300">{project.id}.json</span>
+          </span>
           <button
             ref={closeRef}
             type="button"
             onClick={onClose}
             aria-label="Close project details"
-            className="absolute right-4 top-4 rounded-full bg-black/50 p-2 text-white backdrop-blur transition hover:bg-black/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="link-btn px-2 py-1"
           >
-            <Icon.close className="h-5 w-5" />
+            <span className="text-zinc-500">Esc</span>
+            <Icon.close className="h-3.5 w-3.5" />
           </button>
         </div>
 
-        <div className="flex-1 space-y-6 overflow-y-auto px-6 pb-10 sm:px-8">
-          <div className="-mt-6 relative">
-            <div className="flex flex-wrap items-center gap-3">
-              <CategoryBadge category={project.category} />
-              <StatusDot status={project.status} />
-              {project.year && <span className="text-[11px] text-slate-500">{project.year}</span>}
-            </div>
-            <h2 id="drawer-title" className="mt-3 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
-              {project.title}
-            </h2>
-            {project.subtitle && <p className="mt-1 text-slate-400">{project.subtitle}</p>}
-            <p className="mt-4 text-[15px] leading-relaxed text-slate-300">{project.description}</p>
-            <div className="mt-5 flex flex-wrap gap-1.5">
-              {project.techStack.map((tech) => (
-                <span key={tech} className="chip">
-                  {tech}
-                </span>
-              ))}
-            </div>
-            <div className="mt-6">
-              <ProjectLinks project={project} size="lg" />
-            </div>
-          </div>
+        <div className="flex-1 overflow-y-auto">
+          <Banner project={project} className="aspect-[16/7]" />
 
-          {view === 'eportfolio' ? [reflections, ...body] : [...body, reflections]}
+          <div className="space-y-6 px-5 pb-12 pt-6 sm:px-8">
+            <div>
+              <StatusIndicator status={project.status} />
+              <h2 id="drawer-title" className="mt-3 text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl">
+                {project.title}
+              </h2>
+              {project.subtitle && <p className="mt-1 font-mono text-xs text-zinc-500">{project.subtitle}</p>}
+              <p className="mt-5 text-[15px] leading-relaxed text-zinc-300">{project.description}</p>
+
+              <dl className="mt-6 grid grid-cols-3 border border-zinc-800/80 bg-zinc-900/60">
+                {[
+                  ['Category', toCode(project.category)],
+                  ['Status', project.status],
+                  ['Year', project.year],
+                ].map(([k, v]) => (
+                  <div key={k} className="border-r border-zinc-800/80 px-3 py-2.5 last:border-r-0">
+                    <dt className="label">{k}</dt>
+                    <dd className="mt-1 font-mono text-xs text-zinc-200">{v || '—'}</dd>
+                  </div>
+                ))}
+              </dl>
+
+              <div className="mt-4 flex flex-wrap gap-1">
+                {project.techStack.map((tech) => (
+                  <span key={tech} className="chip">
+                    {tech}
+                  </span>
+                ))}
+              </div>
+              <div className="mt-6">
+                <ProjectLinks project={project} />
+              </div>
+            </div>
+
+            {sections.map(({ key, title, content }, i) => (
+              <DrawerSection key={key} n={i + 1} title={title}>
+                {content}
+              </DrawerSection>
+            ))}
+          </div>
         </div>
       </aside>
     </div>
@@ -476,6 +590,15 @@ export default function App() {
     [pool]
   );
 
+  const stats = useMemo(
+    () => ({
+      total: pool.length,
+      active: pool.filter((p) => p.status === 'Ongoing').length,
+      latestYear: pool.reduce((max, p) => (p.year > max ? p.year : max), '—'),
+    }),
+    [pool]
+  );
+
   const visible = category === 'All Projects' ? pool : pool.filter((p) => p.category === category);
 
   const changeView = (next) => {
@@ -498,36 +621,50 @@ export default function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-ink-950">
-      <Hero view={view} />
+    <div className="min-h-screen bg-zinc-950">
+      <NavBar view={view} onViewChange={changeView} />
+      <Hero view={view} stats={stats} />
 
-      <main id="projects" className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-        <div className="flex flex-col gap-6 rounded-2xl border border-white/10 bg-ink-900/60 p-5 sm:p-6">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-              <h2 className="text-2xl font-bold text-white">{VIEWS[view].heading}</h2>
-              <p className="mt-1 text-sm text-slate-500">
-                {visible.length} {visible.length === 1 ? 'project' : 'projects'} · click a card for details
-              </p>
-            </div>
-            <ViewToggle view={view} onChange={changeView} />
+      <main id="modules" className="mx-auto max-w-6xl scroll-mt-14 px-4 py-16 sm:px-6">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="label">// 01_Modules</p>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-zinc-100 sm:text-4xl">{VIEWS[view].heading}</h2>
           </div>
+          <p className="label">
+            Showing <span className="text-zinc-200">{pad(visible.length)}</span> of {pad(pool.length)} · Select a module to inspect
+          </p>
+        </div>
+
+        <div className="mt-8">
           <FilterTabs active={category} counts={counts} onChange={setCategory} />
         </div>
 
         {visible.length > 0 ? (
-          <div key={`${view}-${category}`} className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div key={`${view}-${category}`} className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {visible.map((project, i) => (
-              <ProjectCard key={project.id} project={project} onOpen={openProject} index={i} />
+              <ProjectCard key={project.id} project={project} onOpen={openProject} index={i} total={visible.length} />
             ))}
           </div>
         ) : (
-          <p className="mt-16 text-center text-slate-500">No projects in this category yet.</p>
+          <p className="label mt-16 border border-dashed border-zinc-800 py-12 text-center">No modules in this category yet.</p>
         )}
       </main>
 
-      <footer className="border-t border-white/5 py-8 text-center text-sm text-slate-600">
-        © {new Date().getFullYear()} {profile.name} · Built with React, Vite & Tailwind CSS
+      <footer id="contact" className="border-t border-zinc-800/80">
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+          <span className="label">
+            © {new Date().getFullYear()} {profile.name} · Built with React / Vite / Tailwind
+          </span>
+          <span className="label flex items-center gap-4">
+            {profile.email && (
+              <a href={`mailto:${profile.email}`} className="transition-colors hover:text-zinc-100">
+                {profile.email}
+              </a>
+            )}
+            <StatusIndicator status="Ongoing" />
+          </span>
+        </div>
       </footer>
 
       <ProjectDrawer project={selected} open={drawerOpen} onClose={closeProject} view={view} />
