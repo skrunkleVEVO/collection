@@ -1,0 +1,68 @@
+// Screenshots live projects into public/images/previews. Run with `npm run capture`.
+// Uses the installed Chrome (playwright-core downloads no browser).
+// GarmentDB is empty on a first visit, so its capture seeds a sample closet into this
+// throwaway browser's localStorage, using the same keys the app itself writes.
+import { mkdirSync } from 'node:fs';
+import { chromium } from 'playwright-core';
+
+const OUT = 'public/images/previews';
+
+const svg = (body, fill) =>
+  `data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240"><rect width="200" height="240" fill="#ececea"/><g fill="${fill}">${body}</g></svg>`,
+  )}`;
+
+const SHAPES = {
+  top: '<path d="M70 50 30 76l14 34 20-10v94h72v-94l20 10 14-34-40-26c-6 14-54 14-60 0Z"/>',
+  layer: '<path d="M72 40 42 56 18 176l30 6 14-72v94h76v-94l14 72 30-6-24-120-30-16c-8 14-48 14-56 0Z"/>',
+  bottom: '<path d="M64 36h72l10 170h-36l-10-104-10 104H54Z"/>',
+  shoe: '<path d="M38 110c20 8 36 2 48-14l62 46c14 8 20 20 18 34H38Z"/>',
+};
+
+const SAMPLE_CLOSET = [
+  ['Boxy heavyweight tee', 'Top', 'Boxy', 'Black', 'top', '#1b1b1d'],
+  ['Washed hoodie', 'Top', 'Oversized', 'Sage', 'layer', '#9cae8a'],
+  ['Overshirt', 'Shirt', 'Regular', 'Olive', 'layer', '#66683a'],
+  ['Shell jacket', 'Outerwear', 'Regular', 'Navy', 'layer', '#1d2747'],
+  ['Wide-leg denim', 'Bottom', 'Wide', 'Navy', 'bottom', '#2f4468'],
+  ['Straight chinos', 'Bottom', 'Straight', 'Khaki', 'bottom', '#b9a57e'],
+  ['Leather boots', 'Footwear', '', 'Brown', 'shoe', '#6a4529'],
+  ['Canvas sneakers', 'Footwear', '', 'White', 'shoe', '#c9c9c4'],
+].map(([name, category, fit, color, shape, fill], i) => ({
+  id: `sample-${i}`,
+  name,
+  category,
+  fit,
+  colors: [color],
+  designs: [],
+  status: i === 1 ? 'laundry' : 'active',
+  notes: '',
+  createdAt: 2000 - i,
+  updatedAt: 2000 - i,
+  photo: svg(SHAPES[shape], fill),
+}));
+
+function seedGarmentDb(closet) {
+  localStorage.setItem('digital-closet:items', JSON.stringify(closet.map(({ photo, ...item }) => item)));
+  for (const { id, photo } of closet) localStorage.setItem(`digital-closet:photo:${id}`, photo);
+}
+
+const SHOTS = [
+  { name: 'garmentdb-phone', url: 'https://skrunklevevo.github.io/garmentdb/', size: [390, 844], seed: seedGarmentDb, arg: SAMPLE_CLOSET },
+];
+
+mkdirSync(OUT, { recursive: true });
+const browser = await chromium.launch({ channel: 'chrome' });
+
+for (const { name, url, size: [width, height], seed, arg } of SHOTS) {
+  const context = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: width < 500 ? 2 : 1 });
+  if (seed) await context.addInitScript(seed, arg);
+  const page = await context.newPage();
+  await page.goto(url, { waitUntil: 'networkidle', timeout: 45000 }).catch(() => {});
+  await page.waitForTimeout(2500);
+  await page.screenshot({ path: `${OUT}/${name}.jpg`, type: 'jpeg', quality: 84 });
+  console.log(name);
+  await context.close();
+}
+
+await browser.close();

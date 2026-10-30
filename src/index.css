@@ -2,47 +2,187 @@
 @tailwind components;
 @tailwind utilities;
 
-/* shadcn/ui tokens (zinc, dark). --glow-* drive the MagicCard border highlight. */
 @layer base {
   :root {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 8% 6%;
-    --card-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-    --radius: 0.75rem;
-    --glow-from: 160 84% 60%;
-    --glow-to: 189 94% 55%;
+    --ground: 10 12 14;
+    --surface: 18 21 25;
+    --ink: 244 245 241;
+    --soft: 170 177 186;
+    --lake: 8 66 84;
+    --lake-bright: 24 128 152;
+    --sun: 247 197 72;
+    --sun-bright: 252 214 118;
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --seam: 50%;
+    --headline: clamp(4.5rem, 11.2vw, 11rem);
   }
 
-  * {
-    @apply border-border;
-  }
   html {
     color-scheme: dark;
-    -webkit-tap-highlight-color: transparent;
     scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+    scrollbar-color: rgb(255 255 255 / 0.2) rgb(var(--ground));
   }
   body {
-    @apply min-h-screen bg-background font-sans text-foreground antialiased;
+    @apply min-h-[100svh] bg-ground font-sans text-ink antialiased;
+    text-size-adjust: 100%;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
   }
   ::selection {
-    @apply bg-emerald-400/25 text-white;
+    background: rgb(var(--sun));
+    color: rgb(var(--ground));
+  }
+  a,
+  button {
+    border-radius: 0.25rem;
+    touch-action: manipulation;
+  }
+  :focus-visible {
+    outline: 2px solid rgb(var(--sun));
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  .page-frame {
+    @apply mx-auto w-full max-w-[100rem] px-4 sm:px-8;
+  }
+
+  .hero-water {
+    position: absolute;
+    inset: var(--seam) 0 0;
+    overflow: hidden;
+    background: rgb(var(--lake));
+  }
+  .hero-glow {
+    position: absolute;
+    inset: -40% -10% auto;
+    height: 90%;
+    background: radial-gradient(50% 50% at 50% 50%, rgb(var(--lake-bright) / 0.55), transparent);
+    animation: drift 14s ease-in-out infinite alternate;
+  }
+  /* The waterline falls through the middle of line two, 1.5 line-heights down the headline. */
+  .hero-headline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(var(--seam) - var(--headline) * 0.9 * 1.5);
+    font-size: var(--headline);
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    text-align: center;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .hero-line {
+    display: block;
+    overflow: hidden;
+  }
+  .hero-line-inner {
+    display: block;
+    animation: line-rise 900ms var(--ease-out) both;
+  }
+  .hero-line-dry {
+    color: rgb(var(--ink));
+  }
+  .hero-line-wet {
+    background: linear-gradient(rgb(var(--ink)) 50%, rgb(var(--sun)) 50%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero-fade {
+    animation: fade-in 500ms ease-out 450ms both;
+  }
+
+  .preview-glow {
+    position: absolute;
+    inset: -6% -4%;
+    z-index: -1;
+    background: radial-gradient(60% 60% at 50% 55%, rgb(var(--glow) / 0.2), transparent 75%);
+    opacity: 0.7;
+    transition: opacity 300ms ease;
+  }
+  .preview-overlay {
+    position: absolute;
+    inset: auto 0 0;
+    height: 30%;
+    background: linear-gradient(to top, rgb(0 0 0 / 0.5), transparent);
+    pointer-events: none;
+  }
+  .preview-live-tall {
+    height: min(80svh, 44rem);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .group:hover .preview-glow {
+      opacity: 1;
+    }
+    .preview-overlay {
+      opacity: 0;
+      transition: opacity 200ms ease;
+    }
+    .group:hover .preview-overlay {
+      opacity: 1;
+    }
+    .preview-run {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    .group:hover .preview-run,
+    .preview-run:focus-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .preview-run:active {
+      transform: scale(0.97);
+    }
+  }
+
+  @media (max-width: 639px) {
+    :root {
+      --seam: 46%;
+      --headline: 14.2vw;
+    }
+  }
+}
+
+@keyframes line-rise {
+  from {
+    transform: translateY(105%);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@keyframes drift {
+  to {
+    transform: translateX(8%) scaleX(1.15);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  .hero-line-inner,
+  .hero-glow {
+    animation: none;
+  }
+  .hero-fade {
+    animation: fade-only 300ms ease-out both;
+  }
+  @keyframes fade-only {
+    from {
+      opacity: 0;
+    }
   }
 }
