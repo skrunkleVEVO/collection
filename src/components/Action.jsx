@@ -2,7 +2,7 @@ import { ICONS } from '@/components/Icons';
 import { cn } from '@/lib/utils';
 
 const VARIANTS = {
-  primary: 'bg-sun text-ground hover-fine:bg-sun-bright',
+  primary: 'bg-accent text-ground hover-fine:bg-white',
   outline: 'border border-white/20 text-ink hover-fine:border-white/40 hover-fine:bg-white/5',
 };
 

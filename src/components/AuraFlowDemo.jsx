@@ -19,13 +19,13 @@ const THREADS = [
   ['Priya', 'thanks!'],
 ];
 
-const PROFILE_TILES = ['#3f5d6b', '#7a6a55', '#55704f', '#6b4f5d', '#4f5a70', '#70664f'];
+const PROFILE_TILES = [0.2, 0.12, 0.16, 0.1, 0.18, 0.14];
 
 function Feed() {
   return (
     <div className="h-full space-y-2 p-2" aria-hidden="true">
-      <div className="h-[58%] rounded-lg bg-[#5f4b6b]" />
-      <div className="h-[40%] rounded-lg bg-[#3f6b66]" />
+      <div className="h-[58%] rounded-lg bg-white/15" />
+      <div className="h-[40%] rounded-lg bg-white/10" />
     </div>
   );
 }
@@ -54,8 +54,8 @@ function Profile() {
         <span className="text-[13px] font-medium text-ink">Your profile</span>
       </div>
       <div className="mt-4 grid grid-cols-3 gap-1" aria-hidden="true">
-        {PROFILE_TILES.map((color) => (
-          <span key={color} className="aspect-square rounded-sm" style={{ backgroundColor: color }} />
+        {PROFILE_TILES.map((alpha) => (
+          <span key={alpha} className="aspect-square rounded-sm bg-white" style={{ opacity: alpha }} />
         ))}
       </div>
     </div>
@@ -72,7 +72,7 @@ export function AuraFlowDemo({ className }) {
   const View = VIEWS[screen];
 
   return (
-    <figure data-ui className={cn('flex flex-col items-center rounded-2xl border border-white/10 bg-lake px-4 pb-6 pt-8 sm:pt-10', className)}>
+    <figure data-ui className={cn('flex flex-col items-center rounded-2xl border border-white/10 bg-ground px-4 pb-6 pt-8 sm:pt-10', className)}>
       <div className="w-full max-w-[18rem] overflow-hidden rounded-[2rem] border border-white/20 bg-ground">
         <div className="flex h-9 items-center justify-center" aria-hidden="true">
           <span className="h-1.5 w-14 rounded-full bg-white/15" />
@@ -95,7 +95,7 @@ export function AuraFlowDemo({ className }) {
                 <button
                   type="button"
                   onClick={() => setScreen('messages')}
-                  className="mt-5 min-h-11 rounded-full bg-sun px-5 text-[15px] font-medium text-ground transition-transform duration-150 ease-out active:scale-[0.97]"
+                  className="mt-5 min-h-11 rounded-full bg-accent px-5 text-[15px] font-medium text-ground transition-transform duration-150 ease-out active:scale-[0.97]"
                 >
                   Open DMs
                 </button>
@@ -122,7 +122,7 @@ export function AuraFlowDemo({ className }) {
           ))}
         </div>
       </div>
-      <figcaption className="mt-5 max-w-sm text-center text-[13px] leading-snug text-ink">
+      <figcaption className="mt-5 max-w-sm text-center text-[13px] leading-snug text-soft">
         Tap the tabs. This is a recreation of the overlay using the app’s own wording, with made-up messages, not a screenshot.
       </figcaption>
     </figure>

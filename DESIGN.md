@@ -1,32 +1,32 @@
 # Design
 
-**World:** the waterline. Night over Okanagan Lake: a near-black ground, one deep lake field, and sun yellow for what you can act on. The hero seam cuts through the headline, and the lake field returns for the academic project.
+**Thesis:** software for personal friction, systems engineering for physical friction. The page is split along those two lines.
 
 ## Tokens (`src/index.css`)
 
 | Role | Token | Value |
 | --- | --- | --- |
-| Ground | `ground` | `rgb(10 12 14)` |
-| Raised surface | `surface` | `rgb(18 21 25)` |
-| Text | `ink` | `rgb(244 245 241)` |
-| Secondary text | `soft` | `rgb(170 177 186)` |
-| Field | `lake` | `rgb(8 66 84)` |
-| Action and key figure | `sun` | `rgb(247 197 72)` |
+| Ground | `ground` | `#0B0C0E` |
+| Card surface | `surface` | `#181A1F` |
+| Text and accent | `ink`, `accent` | `#E5E7EB` |
+| Secondary text | `soft` | `#9CA3AF` |
 | Lines | `border-white/10` | white at 10% |
+
+Monochrome only. Colour on the page comes from the apps' own screenshots.
 
 ## Type
 
-Geist for everything; JetBrains Mono only for tech stack tags. Display is tight (-0.035em to -0.04em) with leading near 1. Body text is at least 15px, and 13px is the floor for captions.
+Geist for everything, with tight tracking on headings. JetBrains Mono for tech stack tags and viewport URLs. Body text is at least 15px, and 13px is the floor for captions.
 
 ## Components
 
-- Buttons are full pills, one sun fill per group, with `scale(0.97)` on press.
-- Each project uses its own composition; there is no repeated card grid.
-- Previews rest as screenshots with a glow tinted from that app, and only load the live app when asked.
+- Projects are cards on `surface` with a title column and a detail column.
+- `InteractiveViewport` is the only way web apps are shown. The app renders at a real device size (1280×720 or 390×844) and is scaled to fit, so the toggle triggers its real breakpoints. It rests as a screenshot and loads the app when asked.
+- Buttons are full pills, one silver fill per group, with `scale(0.97)` on press.
 
 ## Motion
 
-- The one loud moment is the masked headline rise on load.
+- The headline rises through a mask on load, once.
 - Sections rise once as they enter, staggered 70ms.
-- Springs handle hover, tabs and the drawer; the drawer exits faster than it enters.
+- Springs handle the viewport resize (`layout`), toggle thumb and drawer.
 - Hover effects are gated to real pointers, and reduced motion removes all travel.

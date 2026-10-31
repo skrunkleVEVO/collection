@@ -71,7 +71,7 @@ export function TechnicalDrawer({ onClose }) {
         className="absolute inset-y-0 right-0 w-full max-w-[44rem] overflow-y-auto overscroll-contain border-l border-white/10 bg-surface"
       >
         <div className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-white/10 bg-surface px-5 py-3 sm:px-10">
-          <p className="truncate text-[15px] text-soft">{E.category}</p>
+          <p className="truncate text-[15px] text-soft">{E.tag}</p>
           <button
             ref={closeButton}
             type="button"
@@ -115,7 +115,7 @@ export function TechnicalDrawer({ onClose }) {
                 <tbody>
                   {E.metrics.map(({ value, label, source }) => (
                     <tr key={label} className="border-t border-white/10 first:border-t-0">
-                      <td className="w-[6.5rem] whitespace-nowrap py-4 pl-4 pr-2 align-top text-2xl font-semibold tabular-nums tracking-tight text-sun sm:w-[8rem]">{value}</td>
+                      <td className="w-[6.5rem] whitespace-nowrap py-4 pl-4 pr-2 align-top text-2xl font-semibold tabular-nums tracking-tight text-white sm:w-[8rem]">{value}</td>
                       <td className="py-4 pl-2 pr-4 align-top text-[15px] leading-snug text-ink">
                         {label}{' '}
                         <a href={source.href} target="_blank" rel="noopener noreferrer" aria-label={`Source: ${source.label}`} className="text-soft underline underline-offset-4 transition-colors duration-150 hover-fine:text-ink">

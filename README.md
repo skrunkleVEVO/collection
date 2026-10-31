@@ -11,7 +11,7 @@ Personal portfolio built with React, Vite, Tailwind CSS and Framer Motion, deplo
 | Colour and type tokens | `src/index.css`, `tailwind.config.js` |
 | Project screenshots | `public/images/previews/` |
 
-`npm run capture` re-shoots the GarmentDB preview with the installed Chrome. The Triaj images are `assets/shot-*.png` from its live site, and the SomeFolio image is a saved library screenshot.
+`npm run capture` re-shoots the SomeFolio and GarmentDB previews at desktop and mobile sizes with the installed Chrome, using sample data. The Triaj images are `assets/shot-*.png` from its live site.
 
 ## Local development
 

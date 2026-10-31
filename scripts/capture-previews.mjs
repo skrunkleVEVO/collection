@@ -1,7 +1,7 @@
 // Screenshots live projects into public/images/previews. Run with `npm run capture`.
 // Uses the installed Chrome (playwright-core downloads no browser).
-// GarmentDB is empty on a first visit, so its capture seeds a sample closet into this
-// throwaway browser's localStorage, using the same keys the app itself writes.
+// SomeFolio and GarmentDB are empty on a first visit, so their captures seed sample data into
+// this throwaway browser's localStorage, using the same keys the apps themselves write.
 import { mkdirSync } from 'node:fs';
 import { chromium } from 'playwright-core';
 
@@ -47,22 +47,65 @@ function seedGarmentDb(closet) {
   for (const { id, photo } of closet) localStorage.setItem(`digital-closet:photo:${id}`, photo);
 }
 
-const SHOTS = [
-  { name: 'garmentdb-phone', url: 'https://skrunklevevo.github.io/garmentdb/', size: [390, 844], seed: seedGarmentDb, arg: SAMPLE_CLOSET },
+// Real titles and covers from AniList, the same source SomeFolio's own search uses.
+const SHELF = ['Code Geass', 'Neon Genesis Evangelion', "JoJo's Bizarre Adventure", 'Cyberpunk: Edgerunners', 'ERASED', 'Re:ZERO', 'Mob Psycho 100', 'Steins;Gate', 'Vinland Saga', 'Frieren', 'Monster', 'Death Note'];
+
+async function fetchShelf() {
+  const entries = {};
+  for (const [i, search] of SHELF.entries()) {
+    const res = await fetch('https://graphql.anilist.co', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        query: 'query($s:String){Media(search:$s,type:ANIME){title{english romaji} episodes coverImage{extraLarge}}}',
+        variables: { s: search },
+      }),
+    });
+    const { data } = await res.json();
+    const media = data.Media;
+    const id = `sample-${i}`;
+    entries[id] = {
+      id,
+      title: media.title.english || media.title.romaji,
+      category: 'anime',
+      status: i % 4 === 1 ? 'watching' : 'completed',
+      rating: 7 + (i % 4),
+      coverUrl: media.coverImage.extraLarge,
+      updatedAt: 2000 - i,
+      addedAt: 2000 - i,
+      metadata: { episodes: media.episodes, progress: i % 4 === 1 ? Math.ceil((media.episodes || 2) / 2) : media.episodes },
+    };
+  }
+  return { version: 1, entries, vibes: ['Cyberpunk', 'Dark Fantasy', 'Mind-Bender', 'Cozy', 'Mecha', 'Thriller'], vibesUpdatedAt: 1, prefs: {}, prefsUpdatedAt: 0 };
+}
+
+function seedSomeFolio(library) {
+  localStorage.setItem('somefolio:library:v1', JSON.stringify(library));
+  localStorage.setItem('somefolio:tour-seen:v1', '1');
+}
+
+const DESKTOP = { suffix: 'desktop', size: [1280, 720], scale: 1.5 };
+const MOBILE = { suffix: 'mobile', size: [390, 844], scale: 2 };
+
+const APPS = [
+  { name: 'somefolio', url: 'https://skrunklevevo.github.io/SomeFolio/', seed: seedSomeFolio, arg: await fetchShelf() },
+  { name: 'garmentdb', url: 'https://skrunklevevo.github.io/garmentdb/', seed: seedGarmentDb, arg: SAMPLE_CLOSET },
 ];
 
 mkdirSync(OUT, { recursive: true });
 const browser = await chromium.launch({ channel: 'chrome' });
 
-for (const { name, url, size: [width, height], seed, arg } of SHOTS) {
-  const context = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: width < 500 ? 2 : 1 });
-  if (seed) await context.addInitScript(seed, arg);
-  const page = await context.newPage();
-  await page.goto(url, { waitUntil: 'networkidle', timeout: 45000 }).catch(() => {});
-  await page.waitForTimeout(2500);
-  await page.screenshot({ path: `${OUT}/${name}.jpg`, type: 'jpeg', quality: 84 });
-  console.log(name);
-  await context.close();
+for (const { name, url, seed, arg } of APPS) {
+  for (const { suffix, size: [width, height], scale } of [DESKTOP, MOBILE]) {
+    const context = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: scale });
+    await context.addInitScript(seed, arg);
+    const page = await context.newPage();
+    await page.goto(url, { waitUntil: 'networkidle', timeout: 45000 }).catch(() => {});
+    await page.waitForTimeout(7000); // long enough for the "ready offline" toast to clear
+    await page.screenshot({ path: `${OUT}/${name}-${suffix}.jpg`, type: 'jpeg', quality: 84 });
+    console.log(name, suffix);
+    await context.close();
+  }
 }
 
 await browser.close();

@@ -3,72 +3,73 @@ const preview = (file) => `${import.meta.env.BASE_URL}images/previews/${file}`;
 
 export const GITHUB = GITHUB_USER;
 
-// `glow` is sampled from each app's own interface.
 export const PROJECTS = [
   {
     id: 'auraflow',
     title: 'AuraFlow',
-    category: 'Mobile / Android App',
+    tag: 'Mobile / Android App',
     tech: ['Kotlin', 'Accessibility Service', 'Android SDK'],
+    headline: 'Short-Form Video Feed Blocker',
     description:
-      'Android application designed to block short-form video feed addiction loops while maintaining full access to the rest of the application ecosystem.',
-    detail:
-      'No root, no VPN and no network access. It recognises feeds from resource view IDs rather than on-screen text, so it works in any language.',
+      'Non-root Android app using Accessibility Services to detect and block addictive short-form video feeds (Reels/Shorts) at the resource view layer while keeping primary DMs and messaging functional.',
     links: [{ label: 'GitHub', href: `${GITHUB_USER}/AuraFLow`, icon: 'github' }],
-    glow: '45 212 191',
-    thumb: null,
   },
   {
     id: 'somefolio',
     title: 'SomeFolio',
-    category: 'Media Hub / PWA',
+    tag: 'Web App / PWA',
     tech: ['React', 'Vite', 'Tailwind CSS', 'PWA', 'Firebase'],
+    headline: 'Offline-First Personal Media Library',
     description:
-      'An offline-first personal library tracker for managing and organizing anime, manga, games, film, and books.',
-    detail: 'Live search across AniList, Open Library, TVmaze and Wikipedia, with no API keys required.',
+      'Unified tracking dashboard for manga, anime, games, and books featuring live multi-source API search (AniList, Open Library, TVMaze) with offline PWA storage.',
     liveUrl: 'https://skrunklevevo.github.io/SomeFolio/',
     links: [
-      { label: 'Live site', href: 'https://skrunklevevo.github.io/SomeFolio/', icon: 'external', primary: true },
+      { label: 'Live demo', href: 'https://skrunklevevo.github.io/SomeFolio/', icon: 'external', primary: true },
       { label: 'GitHub', href: `${GITHUB_USER}/SomeFolio`, icon: 'github' },
     ],
-    glow: '217 70 239',
-    image: { src: preview('somefolio-library.png'), width: 762, height: 549, alt: 'SomeFolio library showing an anime shelf with vibe filters and progress on each title' },
-    thumb: preview('somefolio-library.png'),
+    previews: {
+      desktop: { src: preview('somefolio-desktop.jpg'), alt: 'SomeFolio on desktop: an anime shelf with cover art, ratings and progress' },
+      mobile: { src: preview('somefolio-mobile.jpg'), alt: 'SomeFolio on a phone: an anime shelf with cover art, ratings and progress' },
+    },
+    previewNote: 'Screenshot with a sample shelf. The live app starts empty, with a short tour.',
   },
   {
     id: 'triaj',
     title: 'Triaj',
-    category: 'Web App / Tool',
-    tech: ['JavaScript', 'PWA', 'Firebase', 'Browser extension'],
+    tag: 'Web App / Productivity',
+    tech: ['JavaScript', 'PWA', 'Firebase', 'Browser Extension'],
+    headline: 'Canvas-Integrated Focus & Triage Planner',
     description:
-      'Fast, interactive triage and prioritization interface built for streamlined task management and focus workflows.',
-    detail: 'Pulls coursework in from Canvas, plans study blocks around classes and runs a focus timer, with a companion browser extension.',
+      'Interactive task triage and scheduling system built to ingest university coursework from Canvas, structure focus blocks around class timetables, and execute timed study sessions.',
     liveUrl: 'https://skrunklevevo.github.io/triaj/',
     links: [
-      { label: 'Live site', href: 'https://skrunklevevo.github.io/triaj/', icon: 'external', primary: true },
+      { label: 'Live demo', href: 'https://skrunklevevo.github.io/triaj/', icon: 'external', primary: true },
       { label: 'GitHub', href: `${GITHUB_USER}/triaj`, icon: 'github' },
     ],
-    glow: '96 124 214',
-    image: { src: preview('triaj-shot-desktop.png'), width: 1280, height: 800, alt: 'Triaj dashboard with the next task, ranked top picks and the coming week' },
-    phone: { src: preview('triaj-shot-phone.png'), width: 390, height: 844, alt: 'Triaj on a phone showing free time and the next task' },
-    thumb: preview('triaj-shot-desktop.png'),
+    previews: {
+      desktop: { src: preview('triaj-shot-desktop.png'), alt: 'Triaj dashboard on desktop with the next task, ranked top picks and the coming week' },
+      mobile: { src: preview('triaj-shot-phone.png'), alt: 'Triaj on a phone showing free time and the next task' },
+    },
+    previewNote: 'Screenshot from the Triaj site. The live link opens its landing page.',
   },
   {
     id: 'garmentdb',
     title: 'GarmentDB',
-    category: 'Web App / Closet Manager',
+    tag: 'Web App / Closet Manager',
     tech: ['React', 'Tailwind CSS', 'Firebase'],
+    headline: 'Digital Closet & Outfit Manager',
     description:
       'Digital closet catalog and outfit combination manager for categorizing wardrobe pieces, tagging styles, and archiving looks.',
-    detail: 'Saved on the device with optional cloud sync, and it reads live local weather when building outfits. The closet in this screenshot is sample data.',
     liveUrl: 'https://skrunklevevo.github.io/garmentdb/',
     links: [
-      { label: 'Live site', href: 'https://skrunklevevo.github.io/garmentdb/', icon: 'external', primary: true },
+      { label: 'Live demo', href: 'https://skrunklevevo.github.io/garmentdb/', icon: 'external', primary: true },
       { label: 'GitHub', href: `${GITHUB_USER}/garmentdb`, icon: 'github' },
     ],
-    glow: '16 185 129',
-    image: { src: preview('garmentdb-phone.jpg'), width: 780, height: 1688, alt: 'GarmentDB closet inventory on a phone, filled with a sample wardrobe' },
-    thumb: preview('garmentdb-phone.jpg'),
+    previews: {
+      desktop: { src: preview('garmentdb-desktop.jpg'), alt: 'GarmentDB closet inventory on desktop, filled with a sample wardrobe' },
+      mobile: { src: preview('garmentdb-mobile.jpg'), alt: 'GarmentDB closet inventory on a phone, filled with a sample wardrobe' },
+    },
+    previewNote: 'Screenshot with a sample closet. The live app starts empty.',
   },
 ];
 
@@ -94,7 +95,7 @@ const SOURCES = {
 export const ENGINEERING = {
   id: 'perovskite',
   title: 'Sustainable Engineering & Design Project',
-  category: 'Academic Engineering Design',
+  tag: 'Academic Engineering Design',
   tech: ['Sustainable Design', 'Perovskite-Silicon Photovoltaics', 'Engineering Analysis'],
   description:
     'Engineering design analysis exploring long-term stability, environmental efficiency, and design trade-offs of commercial perovskite-silicon tandem solar cell integration.',
