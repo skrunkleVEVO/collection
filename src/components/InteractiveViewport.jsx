@@ -38,7 +38,7 @@ function DeviceToggle({ id, mode, onChange }) {
   );
 }
 
-export function InteractiveViewport({ project }) {
+export function InteractiveViewport({ project, stageShape }) {
   const { id, title, liveUrl, previews, previewNote } = project;
   const [mode, setMode] = useState('desktop');
   const [live, setLive] = useState(false);
@@ -61,7 +61,7 @@ export function InteractiveViewport({ project }) {
       </div>
 
       {/* The stage's shape never changes, so toggling can't move anything else on the page. */}
-      <div className="stage-dots relative aspect-[3/4] overflow-hidden sm:aspect-[4/3]">
+      <div className={cn('stage-dots relative aspect-[3/4] overflow-hidden sm:aspect-[4/3]', stageShape)}>
         <div className="absolute inset-0 flex items-center justify-center">
           <motion.div
             ref={frame}

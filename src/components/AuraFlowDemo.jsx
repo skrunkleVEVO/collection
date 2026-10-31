@@ -70,7 +70,7 @@ const VIEWS = { home: Feed, reels: Feed, messages: Messages, profile: Profile };
 
 // The wording and the overlay's behaviour come from the app: it covers feeds, stops above the
 // tab bar, and "Open DMs" jumps to messages.
-export function AuraFlowDemo() {
+export function AuraFlowDemo({ stageShape }) {
   const [screen, setScreen] = useState('reels');
   const [frame, scale] = useFitScale(SCREEN_WIDTH);
   const current = SCREENS.find((s) => s.id === screen);
@@ -82,7 +82,7 @@ export function AuraFlowDemo() {
         <p className="text-[13px] text-soft">Interactive recreation</p>
       </div>
 
-      <div className="stage-dots relative aspect-[3/4] overflow-hidden sm:aspect-[4/3]">
+      <div className={cn('stage-dots relative aspect-[3/4] overflow-hidden sm:aspect-[4/3]', stageShape)}>
         <div className="absolute inset-0 flex items-center justify-center">
           <div ref={frame} className="relative aspect-[9/19] h-[calc(100%-2rem)] shrink-0 overflow-hidden rounded-3xl bg-ground ring-1 ring-white/20">
             <div

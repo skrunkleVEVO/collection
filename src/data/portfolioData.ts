@@ -66,6 +66,10 @@ export const about = {
     { name: 'Engineering design', skills: ['Stakeholder salience analysis', 'C-Sketch ideation', 'Weighted decision matrices', 'Sensitivity analysis'] },
     { name: 'Tools', skills: ['Git'] },
   ],
+  disciplines: [
+    { name: 'Software tools', items: 'AuraFlow, SomeFolio, Triaj, GarmentDB' },
+    { name: 'Physical infrastructure', items: 'Campus Escarpment Mobility System' },
+  ],
   bridge: [
     {
       side: 'Physical infrastructure',
@@ -184,10 +188,10 @@ export const escarpment = {
   title: 'Campus Escarpment Mobility System',
   lede: 'An APSC 169 team project: getting people safely between upper campus housing and the lower transit hub, in every season.',
   stats: [
-    { value: '30%', label: 'Steepest campus slopes on the McKinley Escarpment' },
-    { value: '11', label: 'Stakeholder groups mapped for salience' },
-    { value: '24 → 8', label: 'Concepts longlisted, then shortlisted' },
-    { value: '5%', label: 'Maximum running slope of the proposed pathway' },
+    { value: '30%', label: 'Steepest campus slopes on the McKinley Escarpment', major: true },
+    { value: '5%', label: 'Maximum running slope of the proposed pathway', major: true },
+    { value: '24 → 8', label: 'Concepts longlisted, then shortlisted', major: false },
+    { value: '11', label: 'Stakeholder groups mapped for salience', major: false },
   ],
   overview: {
     plain:
@@ -324,7 +328,7 @@ export const escarpment = {
     ],
   },
   gallery: {
-    plain: 'Reference images of the site conditions behind the project.',
+    plain: 'Reference images of the escarpment and the conditions behind the project, with space for winter hazard photos.',
     items: [
       {
         src: apscImage('international-mews.jpg'),
