@@ -21,7 +21,7 @@ function Headline() {
       {about.title.split(' ').map((word, index) => (
         <span key={`${word}-${index}`}>
           <span className="hero-word">
-            <span className={word === 'actually' ? 'hero-word-inner italic' : 'hero-word-inner'} style={{ animationDelay: `${index * 35}ms` }}>
+            <span className="hero-word-inner" style={{ animationDelay: `${index * 35}ms` }}>
               {word}
             </span>
           </span>{' '}
