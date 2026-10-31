@@ -1,0 +1,32 @@
+import { motion } from 'framer-motion';
+
+import { Action } from '@/components/Action';
+import { PageHeading } from '@/components/PageHeading';
+import { escarpment as E, software } from '@/data/portfolioData';
+import { rise } from '@/lib/motion';
+import { EscarpmentPage } from '@/pages/EscarpmentPage';
+import { ProjectGrid } from '@/pages/SoftwarePage';
+
+// The single page used when isSchoolMode is false: every project together.
+export function ProjectsPage() {
+  return (
+    <>
+      <section>
+        <PageHeading title="Projects" lede={software.lede} />
+        <ProjectGrid>
+          <motion.article variants={rise} className="flex flex-col items-start rounded-2xl border border-white/10 bg-surface p-5 transition-colors duration-200 hover-fine:border-white/20 sm:p-7 lg:col-span-2">
+            <h2 className="text-[clamp(1.75rem,3vw,2.5rem)] font-semibold leading-tight tracking-tight text-white">{E.title}</h2>
+            <p className="mt-2 text-[15px] text-soft">Academic Engineering Design</p>
+            <p className="mt-4 max-w-[44rem] text-base leading-relaxed text-ink">{E.lede}</p>
+            <div className="mt-6">
+              <Action label="Read the project" icon="down" primary onClick={() => document.getElementById('escarpment').scrollIntoView()} />
+            </div>
+          </motion.article>
+        </ProjectGrid>
+      </section>
+      <div className="mt-16 sm:mt-24">
+        <EscarpmentPage headingAs="h2" />
+      </div>
+    </>
+  );
+}

@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUpRight, FileText, X } from 'lucide-react';
+import { ArrowDown, ArrowRight, ArrowUpRight, Link, Mail } from 'lucide-react';
 
 // Lucide v1 ships no brand marks, so GitHub stays inline.
 export function GithubIcon(props) {
@@ -9,4 +9,4 @@ export function GithubIcon(props) {
   );
 }
 
-export const ICONS = { github: GithubIcon, external: ArrowUpRight, down: ArrowDown, doc: FileText, close: X };
+export const ICONS = { github: GithubIcon, external: ArrowUpRight, down: ArrowDown, next: ArrowRight, mail: Mail, link: Link };

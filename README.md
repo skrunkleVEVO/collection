@@ -1,15 +1,18 @@
 # Portfolio
 
-Personal portfolio built with React, Vite, Tailwind CSS and Framer Motion, deployed to GitHub Pages at `/collection/`.
+Academic ePortfolio for APSC 169 and personal software showcase, built with React, Vite, Tailwind CSS and Framer Motion. Deployed to GitHub Pages at `/collection/`.
 
 ## Editing content
 
-| What | Where |
+Everything the site says is in `src/data/portfolioData.ts`.
+
+| What | Setting |
 | --- | --- |
-| Projects and the academic brief | `src/data/projects.js` |
-| Hero copy | `src/components/Hero.jsx` |
-| Colour and type tokens | `src/index.css`, `tailwind.config.js` |
-| Project screenshots | `public/images/previews/` |
+| Four-tab ePortfolio, or About Me and Projects only | `isSchoolMode` |
+| Reflection video (YouTube or Vimeo link) | `reflectionVideoUrl` |
+| Remove the Draft badges on the reflection cards | `reflection.draft` |
+| Email and LinkedIn buttons | `contact` |
+| Phase 4 test results and photos | `escarpment.prototypes.items` (`image`, `results`) |
 
 `npm run capture` re-shoots the SomeFolio and GarmentDB previews at desktop and mobile sizes with the installed Chrome, using sample data. The Triaj images are `assets/shot-*.png` from its live site.
 

@@ -5,7 +5,7 @@
 @layer base {
   :root {
     --ground: 11 12 14;
-    --surface: 24 26 31;
+    --surface: 20 21 25;
     --ink: 229 231 235;
     --soft: 156 163 175;
     --accent: 229 231 235;
@@ -17,15 +17,19 @@
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
     scrollbar-color: rgb(255 255 255 / 0.2) rgb(var(--ground));
+    overflow-y: scroll;
   }
   body {
-    @apply min-h-[100svh] bg-ground font-sans text-ink antialiased;
+    @apply bg-ground font-sans text-ink antialiased;
     text-size-adjust: 100%;
   }
   h1,
   h2,
   h3 {
     text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
   }
   ::selection {
     background: rgb(var(--accent));
@@ -44,7 +48,12 @@
 
 @layer components {
   .page-frame {
-    @apply mx-auto w-full max-w-[84rem] px-4 sm:px-8;
+    @apply mx-auto w-full max-w-[90rem] px-4 sm:px-8;
+  }
+
+  /* Restarts whenever a tab's page stops being hidden. */
+  .page:not([hidden]) {
+    animation: page-in 220ms var(--ease-out);
   }
 
   .hero-line {
@@ -61,9 +70,13 @@
   .hero-fade {
     animation: fade-in 500ms ease-out 350ms both;
   }
-
 }
 
+@keyframes page-in {
+  from {
+    opacity: 0;
+  }
+}
 @keyframes line-rise {
   from {
     transform: translateY(105%);
@@ -75,6 +88,7 @@
     transform: translateY(8px);
   }
 }
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

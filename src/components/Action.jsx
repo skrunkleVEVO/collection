@@ -1,38 +1,41 @@
+import { motion } from 'framer-motion';
+
 import { ICONS } from '@/components/Icons';
+import { tap } from '@/lib/motion';
 import { cn } from '@/lib/utils';
 
 const VARIANTS = {
-  primary: 'bg-accent text-ground hover-fine:bg-white',
-  outline: 'border border-white/20 text-ink hover-fine:border-white/40 hover-fine:bg-white/5',
+  primary: 'border border-accent bg-accent text-ground hover-fine:border-white hover-fine:bg-white',
+  outline: 'border border-white/20 text-ink hover-fine:border-white/50',
 };
 
-// A link when given href (external unless it starts with #), otherwise a button.
+// A link when given href (external unless it starts with # or mailto:), otherwise a button.
 export function Action({ label, href, icon, variant = 'outline', primary, className, ...props }) {
   const Glyph = ICONS[icon];
   const classes = cn(
-    'inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-full px-5 text-[15px] font-medium',
-    'transition-[transform,background-color,border-color] duration-150 ease-out active:scale-[0.97]',
+    'inline-flex min-h-11 max-w-full items-center justify-center gap-2 rounded-full px-5 text-[15px] font-medium',
+    'transition-[background-color,border-color] duration-150 ease-out',
     VARIANTS[primary ? 'primary' : variant],
     className,
   );
   const content = (
     <>
       {Glyph && <Glyph className="size-4 shrink-0" aria-hidden="true" />}
-      {label}
+      <span className="truncate">{label}</span>
     </>
   );
 
   if (!href) {
     return (
-      <button type="button" className={classes} {...props}>
+      <motion.button type="button" {...tap} className={classes} {...props}>
         {content}
-      </button>
+      </motion.button>
     );
   }
-  const external = !href.startsWith('#');
+  const external = !href.startsWith('#') && !href.startsWith('mailto:');
   return (
-    <a href={href} className={classes} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})} {...props}>
+    <motion.a href={href} {...tap} className={classes} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})} {...props}>
       {content}
-    </a>
+    </motion.a>
   );
 }

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { spring } from '@/lib/motion';
+import { spring, tap } from '@/lib/motion';
+import { useFitScale } from '@/lib/useFitScale';
 import { cn } from '@/lib/utils';
 
 const SCREENS = [
@@ -20,6 +21,9 @@ const THREADS = [
 ];
 
 const PROFILE_TILES = [0.2, 0.12, 0.16, 0.1, 0.18, 0.14];
+
+// Drawn at this size, then scaled to fit the phone frame.
+const SCREEN_WIDTH = 270;
 
 function Feed() {
   return (
@@ -66,64 +70,78 @@ const VIEWS = { home: Feed, reels: Feed, messages: Messages, profile: Profile };
 
 // The wording and the overlay's behaviour come from the app: it covers feeds, stops above the
 // tab bar, and "Open DMs" jumps to messages.
-export function AuraFlowDemo({ className }) {
+export function AuraFlowDemo() {
   const [screen, setScreen] = useState('reels');
+  const [frame, scale] = useFitScale(SCREEN_WIDTH);
   const current = SCREENS.find((s) => s.id === screen);
   const View = VIEWS[screen];
 
   return (
-    <figure data-ui className={cn('flex flex-col items-center rounded-2xl border border-white/10 bg-ground px-4 pb-6 pt-8 sm:pt-10', className)}>
-      <div className="w-full max-w-[18rem] overflow-hidden rounded-[2rem] border border-white/20 bg-ground">
-        <div className="flex h-9 items-center justify-center" aria-hidden="true">
-          <span className="h-1.5 w-14 rounded-full bg-white/15" />
-        </div>
+    <figure className="overflow-hidden rounded-xl border border-white/10 bg-ground">
+      <div className="flex min-h-[3.75rem] items-center border-b border-white/10 px-3 py-1.5">
+        <p className="text-[13px] text-soft">Interactive recreation</p>
+      </div>
 
-        <div className="relative h-[24rem] overflow-hidden" aria-live="polite">
-          <View />
-          <AnimatePresence initial={false}>
-            {current.blocked && (
-              <motion.div
-                key="overlay"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 6, transition: { duration: 0.12 } }}
-                transition={spring.press}
-                className="absolute inset-0 flex flex-col items-center justify-center bg-ground/95 px-5 text-center"
-              >
-                <p className="text-lg font-semibold tracking-tight text-ink">Instagram Feed Blocked</p>
-                <p className="mt-1.5 text-[13px] text-soft">Your DMs are still accessible</p>
-                <button
-                  type="button"
-                  onClick={() => setScreen('messages')}
-                  className="mt-5 min-h-11 rounded-full bg-accent px-5 text-[15px] font-medium text-ground transition-transform duration-150 ease-out active:scale-[0.97]"
-                >
-                  Open DMs
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        <div className="grid grid-cols-4 border-t border-white/10 p-1.5">
-          {SCREENS.map(({ id, label }) => (
-            <button
-              key={id}
-              type="button"
-              onClick={() => setScreen(id)}
-              aria-pressed={id === screen}
-              className={cn(
-                'relative min-h-11 rounded-lg text-[13px] transition-colors duration-150',
-                id === screen ? 'font-medium text-ink' : 'text-soft hover-fine:text-ink',
-              )}
+      <div className="relative aspect-[3/4] overflow-hidden sm:aspect-[4/3]">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div ref={frame} className="relative aspect-[9/19] h-[calc(100%-2rem)] shrink-0 overflow-hidden rounded-3xl ring-1 ring-white/20">
+            <div
+              className="absolute left-0 top-0 flex origin-top-left flex-col"
+              style={{ width: SCREEN_WIDTH, height: (SCREEN_WIDTH * 19) / 9, transform: `scale(${scale})` }}
             >
-              {id === screen && <motion.span layoutId="auraflow-tab" transition={spring.press} className="absolute inset-0 rounded-lg bg-white/10" />}
-              <span className="relative">{label}</span>
-            </button>
-          ))}
+              <div className="flex h-9 shrink-0 items-center justify-center" aria-hidden="true">
+                <span className="h-1.5 w-14 rounded-full bg-white/15" />
+              </div>
+
+              <div className="relative min-h-0 flex-1 overflow-hidden" aria-live="polite">
+                <View />
+                <AnimatePresence initial={false}>
+                  {current.blocked && (
+                    <motion.div
+                      key="overlay"
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 6, transition: { duration: 0.12 } }}
+                      transition={spring.press}
+                      className="absolute inset-0 flex flex-col items-center justify-center bg-ground/95 px-5 text-center"
+                    >
+                      <p className="text-lg font-semibold tracking-tight text-ink">Instagram Feed Blocked</p>
+                      <p className="mt-1.5 text-[13px] text-soft">Your DMs are still accessible</p>
+                      <motion.button
+                        type="button"
+                        {...tap}
+                        onClick={() => setScreen('messages')}
+                        className="mt-5 min-h-11 rounded-full bg-accent px-5 text-[15px] font-medium text-ground"
+                      >
+                        Open DMs
+                      </motion.button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              <div className="grid shrink-0 grid-cols-4 border-t border-white/10 p-1">
+                {SCREENS.map(({ id, label }) => (
+                  <motion.button
+                    key={id}
+                    type="button"
+                    {...tap}
+                    onClick={() => setScreen(id)}
+                    aria-pressed={id === screen}
+                    className={cn('relative min-h-11 rounded-lg text-xs transition-colors duration-150', id === screen ? 'font-medium text-ink' : 'text-soft hover-fine:text-ink')}
+                  >
+                    {id === screen && <motion.span layoutId="auraflow-tab" transition={spring.press} className="absolute inset-0 rounded-lg bg-white/10" />}
+                    <span className="relative">{label}</span>
+                  </motion.button>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <figcaption className="mt-5 max-w-sm text-center text-[13px] leading-snug text-soft">
-        Tap the tabs. This is a recreation of the overlay using the app’s own wording, with made-up messages, not a screenshot.
+
+      <figcaption className="flex min-h-[3.875rem] items-center border-t border-white/10 px-3 py-2 text-[13px] leading-snug text-soft">
+        Tap the tabs. A recreation using the app’s own wording, with made-up messages, not a screenshot.
       </figcaption>
     </figure>
   );
