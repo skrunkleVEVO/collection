@@ -9,6 +9,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Geist', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['Newsreader', 'ui-serif', 'Georgia', 'serif'],
       },
       colors: {
         ground: token('ground'),

@@ -82,9 +82,9 @@ export function AuraFlowDemo() {
         <p className="text-[13px] text-soft">Interactive recreation</p>
       </div>
 
-      <div className="relative aspect-[3/4] overflow-hidden sm:aspect-[4/3]">
+      <div className="stage-dots relative aspect-[3/4] overflow-hidden sm:aspect-[4/3]">
         <div className="absolute inset-0 flex items-center justify-center">
-          <div ref={frame} className="relative aspect-[9/19] h-[calc(100%-2rem)] shrink-0 overflow-hidden rounded-3xl ring-1 ring-white/20">
+          <div ref={frame} className="relative aspect-[9/19] h-[calc(100%-2rem)] shrink-0 overflow-hidden rounded-3xl bg-ground ring-1 ring-white/20">
             <div
               className="absolute left-0 top-0 flex origin-top-left flex-col"
               style={{ width: SCREEN_WIDTH, height: (SCREEN_WIDTH * 19) / 9, transform: `scale(${scale})` }}

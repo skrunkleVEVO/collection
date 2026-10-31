@@ -8,7 +8,7 @@ import { toEmbedUrl } from '@/lib/videoEmbed';
 function ReflectionVideo() {
   const embed = toEmbedUrl(reflectionVideoUrl);
   return (
-    <div className="mt-10 aspect-video overflow-hidden rounded-2xl border border-white/10 bg-surface sm:mt-14">
+    <div className="card mt-10 aspect-video overflow-hidden rounded-2xl sm:mt-14">
       {embed ? (
         <iframe
           src={embed}
@@ -19,7 +19,7 @@ function ReflectionVideo() {
           className="h-full w-full border-0"
         />
       ) : (
-        <p className="grid h-full place-items-center px-4 text-center text-[15px] text-soft sm:text-lg">{reflection.videoPlaceholder}</p>
+        <p className="placeholder-hatch grid h-full place-items-center px-4 text-center text-[15px] text-soft sm:text-lg">{reflection.videoPlaceholder}</p>
       )}
     </div>
   );
@@ -32,12 +32,12 @@ export function ReflectionPage() {
       <ReflectionVideo />
       <motion.div variants={group} {...inView} className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
         {reflection.cards.map(({ number, title, text }) => (
-          <motion.article key={number} variants={rise} className="rounded-2xl border border-white/10 bg-surface p-5 transition-colors duration-200 hover-fine:border-white/20 sm:p-6">
+          <motion.article key={number} variants={rise} className="card rounded-2xl p-5 sm:p-6">
             <div className="flex items-center justify-between gap-3">
               <p className="text-[15px] tabular-nums text-soft">{number}</p>
               {reflection.draft && <p className="rounded-full border border-white/20 px-2.5 py-1 text-[13px] leading-none text-ink">Draft</p>}
             </div>
-            <h2 className="mt-3 text-[clamp(1.5rem,2.4vw,2rem)] font-semibold leading-tight tracking-tight text-white">{title}</h2>
+            <h2 className="mt-3 font-display text-[clamp(1.875rem,3vw,2.5rem)] leading-tight tracking-[-0.02em] text-white">{title}</h2>
             <p className="mt-4 max-w-[40rem] text-[17px] leading-relaxed text-ink">{text}</p>
           </motion.article>
         ))}

@@ -13,6 +13,8 @@ Everything the site says is in `src/data/portfolioData.ts`.
 | Remove the Draft badges on the reflection cards | `reflection.draft` |
 | Email and LinkedIn buttons | `contact` |
 | Phase 4 test results and photos | `escarpment.prototypes.items` (`image`, `results`) |
+| Final report PDF (put the file in `public/`) | `reportPdfUrl` |
+| Site gallery photos and captions | `escarpment.gallery.items` (`src`) |
 
 `npm run capture` re-shoots the SomeFolio and GarmentDB previews at desktop and mobile sizes with the installed Chrome, using sample data. The Triaj images are `assets/shot-*.png` from its live site.
 

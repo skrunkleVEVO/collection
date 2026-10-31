@@ -32,6 +32,19 @@ export default function App() {
   const firstRender = useRef(true);
 
   useEffect(() => {
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return undefined;
+    const onPointerMove = (event) => {
+      const card = event.target.closest?.('.card');
+      if (!card) return;
+      const box = card.getBoundingClientRect();
+      card.style.setProperty('--spot-x', `${event.clientX - box.left}px`);
+      card.style.setProperty('--spot-y', `${event.clientY - box.top}px`);
+    };
+    document.addEventListener('pointermove', onPointerMove, { passive: true });
+    return () => document.removeEventListener('pointermove', onPointerMove);
+  }, []);
+
+  useEffect(() => {
     const onHashChange = () => setActive(activeFromHash());
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);

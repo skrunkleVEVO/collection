@@ -22,13 +22,14 @@ export function ProjectCard({ project }) {
     <motion.article
       variants={rise}
       id={project.id}
-      className="flex scroll-mt-20 flex-col rounded-2xl border border-white/10 bg-surface p-2 transition-colors duration-200 hover-fine:border-white/20 sm:p-3"
+      className="card flex scroll-mt-24 flex-col rounded-2xl p-2 sm:p-3"
     >
       {project.liveUrl ? <InteractiveViewport project={project} /> : <AuraFlowDemo />}
 
       <div className="flex flex-1 flex-col p-3 sm:p-4">
-        <h3 className="text-[clamp(1.75rem,3vw,2.5rem)] font-semibold leading-none tracking-tight text-white">{project.title}</h3>
-        <p className="mt-2 text-[15px] text-soft">{project.tag}</p>
+        <h3 className="font-display text-[clamp(2.25rem,3.6vw,3.25rem)] leading-none tracking-[-0.025em] text-white">{project.title}</h3>
+        <p className="mt-3 text-lg font-medium leading-snug tracking-tight text-ink">{project.headline}</p>
+        <p className="mt-1 text-[15px] text-soft">{project.tag}</p>
         <p className="mt-4 max-w-[38rem] text-base leading-relaxed text-ink">{project.description}</p>
         <div className="mt-4">
           <TechStack tech={project.tech} />

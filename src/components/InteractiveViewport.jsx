@@ -61,7 +61,7 @@ export function InteractiveViewport({ project }) {
       </div>
 
       {/* The stage's shape never changes, so toggling can't move anything else on the page. */}
-      <div className="relative aspect-[3/4] overflow-hidden sm:aspect-[4/3]">
+      <div className="stage-dots relative aspect-[3/4] overflow-hidden sm:aspect-[4/3]">
         <div className="absolute inset-0 flex items-center justify-center">
           <motion.div
             ref={frame}
