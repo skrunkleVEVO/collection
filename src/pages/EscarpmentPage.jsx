@@ -137,7 +137,7 @@ function StatBar() {
           )}
         >
           <dt className="mt-3 text-[15px] leading-snug text-soft">{label}</dt>
-          <dd className={cn('font-display leading-[0.95] tracking-[-0.03em] tabular-nums', major ? 'text-[clamp(3.5rem,9vw,9rem)] text-accent' : 'text-[clamp(2.25rem,3.6vw,3.75rem)] text-white')}>{value}</dd>
+          <dd className={cn('font-display tracking-[-0.03em] tabular-nums', major ? 'text-[clamp(3.5rem,9vw,9rem)] text-accent' : 'text-[clamp(2.25rem,3.6vw,3.75rem)] text-white', 'leading-[0.95]')}>{value}</dd>
         </motion.div>
       ))}
     </motion.dl>
@@ -153,13 +153,13 @@ function SlopeComparison() {
           { grade: 30, label: 'Up to 30%', note: 'The escarpment today' },
           { grade: 5, label: '5%', note: 'The proposed pathway' },
         ].map(({ grade, label, note }) => (
-          <div key={grade} className="grid grid-cols-1 items-end gap-x-6 gap-y-3 sm:grid-cols-[minmax(0,1fr)_11rem]">
+          <div key={grade} className="grid grid-cols-1 items-end gap-x-6 gap-y-3 sm:grid-cols-[minmax(0,44rem)_14rem]">
             <svg viewBox="0 0 200 62" className="block w-full" role="img" aria-label={`A ${grade}% slope drawn to scale`}>
               <polygon points={`0,61 200,61 200,${61 - grade * 2}`} className={grade === 30 ? 'fill-accent/80' : 'fill-accent/45'} />
               <line x1="0" y1="61.5" x2="200" y2="61.5" stroke="rgb(255 255 255 / 0.2)" />
             </svg>
             <div>
-              <p className="font-display text-[clamp(2rem,3.4vw,3rem)] leading-none tracking-[-0.02em] text-white">{label}</p>
+              <p className="whitespace-nowrap font-display text-[clamp(2rem,3.4vw,3rem)] leading-none tracking-[-0.02em] text-white">{label}</p>
               <p className="mt-2 text-[15px] leading-snug text-soft">{note}</p>
             </div>
           </div>
