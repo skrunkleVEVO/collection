@@ -16,7 +16,10 @@ Everything hangs from one vertical line at column 6 of a 12-column grid (`.journ
 | Accent: actions, figures, the footer field | `accent` | `#9EBEE0` |
 | Secondary text | `soft` | `#9CA3AF` |
 
-No gradients, shadows, glass or hairlines. Surfaces separate by a tone step (`.field` is a full-bleed band of `surface`). Two blocks use the accent as a whole field: "My leadership" on the APSC page and the footer.
+No gradients, shadows or glass. Two kinds of separation:
+
+- **Rules**, like a drawing sheet: `line` (ink at 12%) and `line-strong` (ink at 28%), always 1px. Every section opens on a full-width rule (`.sheet`); facts, findings, index rows, table rows and ledgers each sit on their own hairline. The header has a bottom rule and its tab indicator sits on it. Photographs carry a 1px inner edge so light images keep a drawn border. Rules are open lines, not closed boxes; only the app viewers are framed.
+- **Tone steps**: `.field` is a full-bleed band of `surface`. Two blocks use the accent as a whole field: "My leadership" on the APSC page and the footer.
 
 ## Type scale
 
@@ -29,7 +32,13 @@ Newsreader for titles, Geist for reading. Six steps only:
 | `.t-title` | Section titles |
 | `.t-lead` | Short statements and subheads |
 | `text-lg` / `text-xl` | Body |
-| `text-[15px]` | Captions and labels |
+| `.t-label` | Captions and labels (15px, soft) |
+
+Display weights get lighter as size grows (huge 300, display 340, title 380), and Newsreader's optical-size axis is on, so large settings get finer contrast. Text renders with greyscale smoothing, kerning and ligatures; figures are lining and tabular.
+
+## Rhythm
+
+`--section` is the one gap between sections; `--lead-in` is the one gap between a heading and what it introduces.
 
 No eyebrows above headings, no index numbers, no pill badges.
 
@@ -44,5 +53,8 @@ No eyebrows above headings, no index numbers, no pill badges.
 
 - The home headline rises line by line through a mask on load, once.
 - Sections enter part by part (heading, text, picture) with a short stagger.
-- Presses scale to 0.98 on a spring; hovers are gated to real pointers.
+- Presses scale to 0.97. Hovers are gated to real pointers.
+- Buttons are square and ruled; hover inverts the fill and the glyph nudges the way it points.
+- Index rows: an accent rule sweeps across the top edge on hover, in from the left and out to the right. Footer links do the same with an underline over a faint resting rule.
+- Entrances use full transform strings so they run on the compositor.
 - Reduced motion removes all travel.

@@ -16,7 +16,7 @@ const DEVICES = {
 
 function DeviceToggle({ id, mode, onChange }) {
   return (
-    <div role="group" aria-label="Preview size" className="flex shrink-0 rounded-lg border border-white/10 bg-surface p-0.5">
+    <div role="group" aria-label="Preview size" className="flex shrink-0 border border-line bg-ground p-0.5">
       {Object.entries(DEVICES).map(([key, { label, Icon }]) => (
         <motion.button
           key={key}
@@ -25,7 +25,7 @@ function DeviceToggle({ id, mode, onChange }) {
           onClick={() => onChange(key)}
           aria-pressed={mode === key}
           className={cn(
-            'relative flex min-h-10 items-center gap-1.5 rounded-md px-2.5 text-[13px] transition-colors duration-150',
+            'relative flex min-h-10 items-center gap-1.5 px-2.5 text-[13px] tracking-[0.005em] transition-colors duration-200',
             mode === key ? 'bg-accent font-medium text-ground' : 'text-soft hover-fine:text-ink',
           )}
         >
@@ -51,8 +51,8 @@ export function InteractiveViewport({ project, stageShape }) {
   };
 
   return (
-    <figure data-ui className="overflow-hidden bg-surface">
-      <div className="flex min-h-[3.75rem] flex-wrap items-center gap-x-3 gap-y-1 px-3 py-1.5">
+    <figure data-ui className="overflow-hidden border border-line bg-surface">
+      <div className="flex min-h-[3.75rem] flex-wrap items-center gap-x-3 gap-y-1 border-b border-line px-3 py-1.5">
         <p className="min-w-0 flex-[1_1_10rem] truncate text-[13px] text-soft">{liveUrl}</p>
         <div className="ml-auto">
           <DeviceToggle id={id} mode={mode} onChange={setMode} />
@@ -101,7 +101,7 @@ export function InteractiveViewport({ project, stageShape }) {
         </div>
       </div>
 
-      <div className="flex min-h-[3.875rem] flex-wrap items-center justify-between gap-x-4 gap-y-2 px-3 py-2">
+      <div className="flex min-h-[3.875rem] flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-line px-3 py-2">
         <figcaption className="min-w-0 flex-[1_1_12rem] text-[13px] leading-snug text-soft">{live ? 'Running the deployed app.' : previewNote}</figcaption>
         {live ? (
           <Action label="Close" onClick={stop} aria-label={`Close the live ${title} app`} className="shrink-0 px-4" />
@@ -111,7 +111,7 @@ export function InteractiveViewport({ project, stageShape }) {
             {...tap}
             onClick={() => setLive(true)}
             aria-label={`Run ${title} live`}
-            className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-white/20 px-4 text-[15px] font-medium text-ink transition-colors duration-150 hover-fine:border-white/50"
+            className="inline-flex min-h-11 shrink-0 items-center gap-2 border border-line-strong px-4 text-[15px] font-medium text-ink transition-[background-color,border-color,color] duration-200 ease-out hover-fine:border-ink hover-fine:bg-ink hover-fine:text-ground"
           >
             <Play className="size-3.5 fill-current" aria-hidden="true" />
             Run live

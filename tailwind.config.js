@@ -17,6 +17,13 @@ export default {
         ink: token('ink'),
         soft: token('soft'),
         accent: token('accent'),
+        // Drawing-sheet rules: a quiet hairline and a stronger one for edges people act on.
+        line: 'rgb(var(--ink) / 0.12)',
+        'line-strong': 'rgb(var(--ink) / 0.28)',
+      },
+      transitionTimingFunction: {
+        out: 'var(--ease-out)',
+        'in-out': 'var(--ease-in-out)',
       },
     },
   },

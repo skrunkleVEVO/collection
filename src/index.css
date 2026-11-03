@@ -10,27 +10,45 @@
     --soft: 156 163 175;
     --accent: 158 190 224;
     --gutter: clamp(1.25rem, 3.4vw, 3.5rem);
+    /* Vertical rhythm: one gap between sections, one between a heading and what it introduces. */
+    --section: clamp(6.5rem, 11vw, 11rem);
+    --lead-in: clamp(2.75rem, 4.6vw, 4.5rem);
     --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   }
 
   html {
     color-scheme: dark;
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
-    scrollbar-color: rgb(255 255 255 / 0.2) rgb(var(--ground));
+    scrollbar-color: rgb(var(--ink) / 0.22) rgb(var(--ground));
+    scrollbar-width: thin;
     overflow-y: scroll;
     background: rgb(var(--ground));
   }
   body {
-    @apply bg-ground font-sans text-ink antialiased;
+    @apply bg-ground font-sans text-ink;
     text-size-adjust: 100%;
+    /* Light text on a near-black ground: greyscale smoothing keeps strokes thin and edges crisp. */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-kerning: normal;
+    font-optical-sizing: auto;
+    font-synthesis: none;
+    font-feature-settings: 'kern', 'liga', 'calt';
+    caret-color: rgb(var(--accent));
   }
   h1,
   h2,
-  h3 {
+  h3,
+  h4 {
     text-wrap: balance;
   }
-  p {
+  p,
+  li,
+  dd,
+  figcaption {
     text-wrap: pretty;
   }
   ::selection {
@@ -42,8 +60,13 @@
     touch-action: manipulation;
   }
   :focus-visible {
-    outline: 2px solid rgb(var(--accent));
-    outline-offset: 3px;
+    outline: 1px solid rgb(var(--accent));
+    outline-offset: 4px;
+  }
+  img {
+    /* A hairline inside every photograph's edge, so light images keep a drawn border on the dark ground. */
+    outline: 1px solid rgb(var(--ink) / 0.08);
+    outline-offset: -1px;
   }
 }
 
@@ -58,26 +81,54 @@
     @apply grid grid-cols-1 gap-x-8 lg:grid-cols-12 lg:gap-x-10;
   }
 
-  /* The journal's type scale: huge, display, title, lead, then 18px body and 15px small. */
+  .section-gap {
+    padding-top: var(--section);
+  }
+  .lead-in {
+    margin-top: var(--lead-in);
+  }
+
+  /* A section opens on a full-width rule, like a sheet break in a drawing set. */
+  .sheet {
+    @apply border-t border-line;
+    padding-top: clamp(1.75rem, 2.6vw, 2.5rem);
+  }
+
+  /* The journal's type scale: huge, display, title, lead, then 18px body and 15px small.
+     Newsreader's optical size axis does the rest: finer contrast and tighter fit at display sizes. */
   .t-huge {
-    @apply font-display tracking-[-0.05em];
+    @apply font-display;
     font-size: clamp(3.5rem, 11.5vw, 13rem);
+    font-weight: 300;
     line-height: 0.86;
+    letter-spacing: -0.045em;
+    font-variant-numeric: lining-nums tabular-nums;
   }
   .t-display {
-    @apply font-display tracking-[-0.04em];
+    @apply font-display;
     font-size: clamp(2.75rem, 6.9vw, 9.5rem);
-    line-height: 0.95;
+    font-weight: 340;
+    line-height: 0.94;
+    letter-spacing: -0.038em;
   }
   .t-title {
-    @apply font-display tracking-[-0.03em];
+    @apply font-display;
     font-size: clamp(2.25rem, 4.4vw, 4.75rem);
+    font-weight: 380;
     line-height: 0.98;
+    letter-spacing: -0.028em;
   }
   .t-lead {
     font-size: clamp(1.375rem, 2.1vw, 2rem);
     line-height: 1.3;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.012em;
+  }
+  /* Small labels: Geist at 15px, tracked a hair open so they hold up under the display sizes. */
+  .t-label {
+    font-size: 15px;
+    line-height: 1.35;
+    letter-spacing: 0.005em;
+    @apply text-soft;
   }
 
   /* A full-bleed field one tone up from the ground, used for the physical-systems division. */
@@ -85,6 +136,62 @@
     @apply bg-surface;
     margin-inline: calc(var(--gutter) * -1);
     padding-inline: var(--gutter);
+  }
+
+  /* A faint rule under the link at rest; on hover a solid one draws in from the left and leaves to the right.
+     Both sit just under the baseline of text centred in a 44px target. */
+  .link-draw {
+    position: relative;
+    text-decoration: none;
+  }
+  .link-draw::before,
+  .link-draw::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(50% - 0.72em);
+    height: 1px;
+    background: currentColor;
+  }
+  .link-draw::before {
+    opacity: 0.28;
+  }
+  .link-draw::after {
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 420ms var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .link-draw:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+  }
+
+  /* An index row: a hairline at rest, and an accent rule that sweeps across it on hover. */
+  .index-row {
+    position: relative;
+    @apply border-t border-line;
+  }
+  .index-row::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -1px;
+    height: 1px;
+    background: rgb(var(--accent));
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 500ms var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .index-row:hover::before,
+    .index-row:focus-visible::before {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
   }
 
   /* Restarts whenever a tab's page stops being hidden. */
@@ -101,10 +208,10 @@
   }
   .mask-line > span {
     display: block;
-    animation: line-rise 900ms var(--ease-out) both;
+    animation: line-rise 1000ms var(--ease-out) both;
   }
   .hero-fade {
-    animation: fade-in 600ms var(--ease-out) 420ms both;
+    animation: fade-in 700ms var(--ease-out) 480ms both;
   }
 }
 
@@ -115,13 +222,13 @@
 }
 @keyframes line-rise {
   from {
-    transform: translateY(110%);
+    transform: translateY(105%);
   }
 }
 @keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(12px);
   }
 }
 
@@ -134,6 +241,10 @@
   }
   .hero-fade {
     animation: fade-only 300ms ease-out both;
+  }
+  .link-draw::after,
+  .index-row::before {
+    transition: opacity 200ms ease;
   }
   @keyframes fade-only {
     from {

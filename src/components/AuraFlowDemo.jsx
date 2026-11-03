@@ -77,8 +77,8 @@ export function AuraFlowDemo({ stageShape }) {
   const View = VIEWS[screen];
 
   return (
-    <figure data-ui className="overflow-hidden bg-surface">
-      <div className="flex min-h-[3.75rem] items-center px-3 py-1.5">
+    <figure data-ui className="overflow-hidden border border-line bg-surface">
+      <div className="flex min-h-[3.75rem] items-center border-b border-line px-3 py-1.5">
         <p className="text-[13px] text-soft">Interactive recreation</p>
       </div>
 
@@ -140,7 +140,7 @@ export function AuraFlowDemo({ stageShape }) {
         </div>
       </div>
 
-      <figcaption className="flex min-h-[3.875rem] items-center px-3 py-2 text-[13px] leading-snug text-soft">
+      <figcaption className="flex min-h-[3.875rem] items-center border-t border-line px-3 py-2 text-[13px] leading-snug text-soft">
         Tap the tabs. A recreation using the app’s own wording, with made-up messages, not a screenshot.
       </figcaption>
     </figure>

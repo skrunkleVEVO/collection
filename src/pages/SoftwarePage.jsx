@@ -4,7 +4,7 @@ import { projects, software } from '@/data/portfolioData';
 
 export function SoftwareRows({ titleAs }) {
   return (
-    <div className="mt-24 space-y-36 sm:mt-36 sm:space-y-52">
+    <div className="space-y-[var(--section)] pt-[var(--section)]">
       {projects.map((project) => (
         <ProjectRow key={project.id} project={project} as={titleAs} />
       ))}

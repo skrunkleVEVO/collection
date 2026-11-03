@@ -31,18 +31,18 @@ function ReflectionVideo() {
 // Each question is a journal entry: the question at display size in the left zone, the answer on the axis.
 function Entry({ title, text, image }) {
   return (
-    <motion.article variants={group} {...inView} className="journal gap-y-6">
+    <motion.article variants={group} {...inView} className="sheet journal gap-y-6">
       <motion.div variants={rise} className="lg:col-span-5">
         <h2 className="t-title text-white">{title}</h2>
-        {reflection.draft && <p className="mt-4 text-[15px] text-soft">Draft, to be rewritten in my own words.</p>}
+        {reflection.draft && <p className="t-label mt-4">Draft, to be rewritten in my own words.</p>}
         {image && (
-          <figure className="mt-10 hidden w-[78%] lg:block">
+          <figure className="lead-in hidden w-[78%] lg:block">
             <img src={image.src} alt={image.alt} width={image.width} height={image.height} loading="lazy" className="aspect-[4/3] w-full object-cover" />
-            <figcaption className="mt-3 max-w-[34ch] text-[15px] leading-snug text-soft">{image.caption}</figcaption>
+            <figcaption className="t-label mt-3 max-w-[34ch]">{image.caption}</figcaption>
           </figure>
         )}
       </motion.div>
-      <motion.p variants={rise} className="max-w-[60ch] text-xl leading-[1.6] text-ink lg:col-span-7 lg:max-w-none lg:pt-3">
+      <motion.p variants={rise} className="max-w-[60ch] text-xl leading-[1.6] text-ink lg:col-span-7 lg:max-w-none lg:pt-[0.55rem]">
         {text}
       </motion.p>
     </motion.article>
@@ -53,10 +53,10 @@ export function ReflectionPage() {
   return (
     <section>
       <PageHeading title={reflection.title} lede={reflection.lede} action={{ label: 'Read the four answers', onClick: () => document.getElementById('reflection-entries').scrollIntoView() }} />
-      <div className="journal mt-16 sm:mt-24">
+      <div className="journal lead-in">
         <ReflectionVideo />
       </div>
-      <div id="reflection-entries" className="mt-28 scroll-mt-24 space-y-28 sm:mt-44 sm:space-y-40">
+      <div id="reflection-entries" className="scroll-mt-24 space-y-[var(--section)] pt-[var(--section)]">
         {reflection.cards.map((card) => (
           <Entry key={card.number} {...card} />
         ))}

@@ -36,9 +36,9 @@ function ChapterNav() {
   }, []);
 
   return (
-    <nav aria-label="Project chapters" className="field sticky top-[4.25rem] z-30 mt-20 hidden lg:block">
+    <nav aria-label="Project chapters" className="field sticky top-[4.3rem] z-30 lead-in hidden border-b border-line lg:block">
       <div className="journal">
-        <p className="flex min-h-12 items-center text-[15px] text-soft lg:col-span-5">{E.course} case study</p>
+        <p className="t-label flex min-h-12 items-center lg:col-span-5">{E.course} case study</p>
         <ul className="flex flex-wrap gap-x-7 lg:col-span-7">
           {CHAPTERS.map(([id, label]) => (
             <li key={id} className="relative">
@@ -47,11 +47,11 @@ function ChapterNav() {
                 {...tap}
                 onClick={() => document.getElementById(id).scrollIntoView()}
                 aria-current={active === id ? 'true' : undefined}
-                className={cn('flex min-h-12 items-center text-[15px] transition-colors duration-150', active === id ? 'text-white' : 'text-soft hover-fine:text-ink')}
+                className={cn('flex min-h-12 items-center text-[15px] tracking-[0.005em] transition-colors duration-200', active === id ? 'text-white' : 'text-soft hover-fine:text-ink')}
               >
                 {label}
               </motion.button>
-              {active === id && <motion.span layoutId="chapter-marker" transition={spring.press} className="absolute inset-x-0 bottom-1.5 h-0.5 bg-accent" />}
+              {active === id && <motion.span layoutId="chapter-marker" transition={spring.sheet} className="absolute inset-x-0 -bottom-px h-px bg-accent" />}
             </li>
           ))}
         </ul>
@@ -63,16 +63,16 @@ function ChapterNav() {
 // Title in the left zone, plain-language paragraph on the axis, then the evidence.
 function Chapter({ id, title, plain, children, className }) {
   return (
-    <section id={id} className={cn('scroll-mt-32', className)}>
+    <section id={id} className={cn('sheet scroll-mt-32', className)}>
       <motion.div variants={group} {...inView} className="journal gap-y-6">
         <motion.h2 variants={rise} className="t-title text-white lg:col-span-5">
           {title}
         </motion.h2>
-        <motion.p variants={rise} className={cn(STATEMENT, 'lg:col-span-7 lg:pt-2')}>
+        <motion.p variants={rise} className={cn(STATEMENT, 'lg:col-span-7 lg:pt-[0.55rem]')}>
           {plain}
         </motion.p>
       </motion.div>
-      <div className="mt-14 sm:mt-20">{children}</div>
+      <div className="lead-in">{children}</div>
     </section>
   );
 }
@@ -84,9 +84,9 @@ function Subheading({ children, className }) {
 // Findings set as a column of short entries: no boxes, just a title and its sentence.
 function Points({ items, className }) {
   return (
-    <motion.ul variants={group} {...inView} className={cn('grid grid-cols-1 gap-x-10 gap-y-9', className)}>
+    <motion.ul variants={group} {...inView} className={cn('grid grid-cols-1 gap-x-8 gap-y-8', className)}>
       {items.map(({ title, text }) => (
-        <motion.li key={title} variants={rise}>
+        <motion.li key={title} variants={rise} className="border-t border-line pt-4">
           <p className="text-lg font-medium leading-snug text-white">{title}</p>
           <p className="mt-2 max-w-[44ch] text-lg leading-relaxed text-ink">{text}</p>
         </motion.li>
@@ -97,10 +97,10 @@ function Points({ items, className }) {
 
 function StatBar() {
   return (
-    <motion.dl variants={group} {...inView} className="journal mt-20 gap-y-12 sm:mt-28">
+    <motion.dl variants={group} {...inView} className="journal lead-in gap-y-12">
       {E.stats.map(({ value, label, major }, index) => (
-        <motion.div key={label} variants={rise} className={cn('flex flex-col-reverse justify-end', major ? (index === 0 ? 'lg:col-span-5' : 'lg:col-span-7') : 'lg:col-span-3', index === 2 && 'lg:col-start-6')}>
-          <dt className="mt-3 max-w-[26ch] text-[15px] leading-snug text-soft">{label}</dt>
+        <motion.div key={label} variants={rise} className={cn('flex flex-col-reverse justify-end border-t border-line pt-5', major ? (index === 0 ? 'lg:col-span-5' : 'lg:col-span-7') : 'lg:col-span-3', index === 2 && 'lg:col-start-6')}>
+          <dt className="t-label mt-4 max-w-[26ch]">{label}</dt>
           <dd className={cn('tabular-nums', major ? 't-huge text-accent' : 't-title text-white')}>{value}</dd>
         </motion.div>
       ))}
@@ -123,12 +123,12 @@ function SlopeComparison() {
             </svg>
             <div>
               <p className="t-title whitespace-nowrap text-white">{label}</p>
-              <p className="mt-2 text-[15px] leading-snug text-soft">{note}</p>
+              <p className="t-label mt-2">{note}</p>
             </div>
           </div>
         ))}
       </div>
-      <figcaption className="mt-6 text-[15px] leading-snug text-soft">Both slopes are drawn to scale over the same horizontal distance.</figcaption>
+      <figcaption className="t-label mt-6 border-t border-line pt-3">Both slopes are drawn to scale over the same horizontal distance.</figcaption>
     </motion.figure>
   );
 }
@@ -143,7 +143,7 @@ const RATINGS = [
 function StakeholderTable() {
   return (
     <motion.div variants={rise} {...inView} className="lg:col-span-7 lg:col-start-6">
-      <div className="hidden grid-cols-[minmax(0,1fr)_5.5rem_5.5rem_5.5rem_6.5rem] gap-3 px-4 pb-3 text-[15px] text-soft md:grid" aria-hidden="true">
+      <div className="t-label hidden grid-cols-[minmax(0,1fr)_5.5rem_5.5rem_5.5rem_6.5rem] gap-3 border-b border-line-strong pb-3 md:grid" aria-hidden="true">
         <span>Stakeholder</span>
         {RATINGS.map(([, label]) => (
           <span key={label}>{label}</span>
@@ -152,7 +152,7 @@ function StakeholderTable() {
       </div>
       <ul>
         {E.stakeholders.groups.map((row) => (
-          <li key={row.name} className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-3 gap-y-2 px-4 py-3.5 odd:bg-surface md:grid-cols-[minmax(0,1fr)_5.5rem_5.5rem_5.5rem_6.5rem] md:items-center">
+          <li key={row.name} className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-3 gap-y-2 border-b border-line py-3.5 transition-colors duration-200 hover-fine:bg-surface md:grid-cols-[minmax(0,1fr)_5.5rem_5.5rem_5.5rem_6.5rem] md:items-center">
             <p className="text-base leading-snug text-white">{row.name}</p>
             <dl className="col-span-2 row-start-2 grid grid-cols-3 gap-2 md:contents">
               {RATINGS.map(([key, label]) => (
@@ -177,7 +177,7 @@ function ConceptFunnel() {
       <motion.div variants={rise} {...inView} className="lg:col-span-5">
         <p className="t-huge text-white">{longlist.length}</p>
         <h3 className="t-lead mt-3 text-white">C-Sketch concepts</h3>
-        <ul className="mt-6 columns-1 gap-x-8 text-[15px] leading-relaxed text-soft sm:columns-2">
+        <ul className="mt-6 columns-1 gap-x-8 border-t border-line pt-4 text-[15px] leading-relaxed text-soft sm:columns-2">
           {longlist.map((concept) => (
             <li key={concept} className="break-inside-avoid">
               {concept}
@@ -188,13 +188,13 @@ function ConceptFunnel() {
       <motion.div variants={rise} {...inView} className="lg:col-span-7">
         <p className="t-huge text-accent">{shortlist.length}</p>
         <h3 className="t-lead mt-3 text-white">Shortlisted solutions</h3>
-        <ul className="mt-6">
+        <ul className="mt-6 border-t border-line">
           {shortlist.map((solution) => (
             <li
               key={solution}
               className={cn(
-                't-lead flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-2',
-                solution === selected ? 'bg-accent px-4 text-ground' : 'text-ink',
+                't-lead flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-line py-2.5',
+                solution === selected ? 'border-accent bg-accent px-4 text-ground' : 'text-ink',
               )}
             >
               {solution}
@@ -213,7 +213,7 @@ function WeightBreakdown() {
   return (
     <motion.div variants={group} {...inView} className="lg:col-span-7">
       <Subheading>Weighted decision matrix: six criteria</Subheading>
-      <div className="mt-6 flex h-4 gap-0.5 overflow-hidden" aria-hidden="true">
+      <div className="mt-6 flex h-3 gap-px overflow-hidden" aria-hidden="true">
         {criteria.map(({ name, weight }, index) => (
           <motion.span
             key={name}
@@ -223,14 +223,14 @@ function WeightBreakdown() {
           />
         ))}
       </div>
-      <ul className="mt-6 space-y-1">
+      <ul className="mt-6 border-b border-line">
         {criteria.map(({ name, weight, why }) => (
           <motion.li
             key={name}
             variants={rise}
             onPointerEnter={() => setFocus(name)}
             onPointerLeave={() => setFocus(null)}
-            className="grid grid-cols-[minmax(0,1fr)_4.5rem] items-baseline gap-x-4 py-3 transition-colors duration-150 hover-fine:bg-surface sm:grid-cols-[11rem_minmax(0,1fr)_5rem] sm:px-3"
+            className="grid grid-cols-[minmax(0,1fr)_4.5rem] items-baseline gap-x-4 border-t border-line py-3.5 transition-colors duration-200 hover-fine:bg-surface sm:grid-cols-[11rem_minmax(0,1fr)_5rem] sm:px-3"
           >
             <span className="text-lg font-medium text-white">{name}</span>
             <span className="col-span-2 row-start-2 mt-1 text-lg leading-snug text-ink sm:col-span-1 sm:col-start-2 sm:row-start-1 sm:mt-0">{why}</span>
@@ -244,10 +244,10 @@ function WeightBreakdown() {
 
 function PrototypeEntry({ title, subject, text, specs, image, results, wide }) {
   return (
-    <motion.article variants={rise} className={cn(wide ? 'lg:col-span-12' : 'lg:col-span-6', wide && 'journal gap-y-8 bg-surface p-6 sm:p-10')}>
+    <motion.article variants={rise} className={cn(wide ? 'lg:col-span-12' : 'border-t border-line pt-6 lg:col-span-6', wide && 'journal gap-y-8 bg-surface p-6 sm:p-10')}>
       <div className={cn(wide && 'lg:col-span-5')}>
         <h3 className="t-title text-white">{subject}</h3>
-        <p className="mt-3 text-[15px] text-soft">
+        <p className="t-label mt-3">
           {title}. {E.prototypes.badge}.
         </p>
         <p className="mt-5 max-w-[44ch] text-lg leading-relaxed text-ink">{text}</p>
@@ -256,11 +256,11 @@ function PrototypeEntry({ title, subject, text, specs, image, results, wide }) {
       {(specs.length > 0 || image) && (
         <div className={cn(wide && 'lg:col-span-7')}>
           {specs.length > 0 && (
-            <dl className="grid grid-cols-2 gap-x-8 gap-y-7 xl:grid-cols-3">
+            <dl className="grid grid-cols-2 gap-x-6 gap-y-5 xl:grid-cols-3">
               {specs.map(({ label, value }) => (
-                <div key={label}>
-                  <dt className="text-lg text-soft">{label}</dt>
-                  <dd className="text-lg text-white">{value}</dd>
+                <div key={label} className="border-t border-line pt-3">
+                  <dt className="t-label">{label}</dt>
+                  <dd className="mt-1.5 text-lg text-white">{value}</dd>
                 </div>
               ))}
             </dl>
@@ -277,7 +277,7 @@ const MOSAIC = ['lg:col-span-7', 'lg:col-span-5', 'lg:col-span-5', 'lg:col-span-
 
 function MosaicTile({ item: { src, width, height, title, caption, credit }, span, index }) {
   return (
-    <motion.figure variants={rise} className={cn('group flex flex-col', span, index % 2 ? 'lg:bg-surface' : 'lg:bg-surface/50')}>
+    <motion.figure variants={rise} className={cn('group flex flex-col bg-ground', span)}>
       {src ? (
         <div className="overflow-hidden">
           <img
@@ -291,12 +291,12 @@ function MosaicTile({ item: { src, width, height, title, caption, credit }, span
           />
         </div>
       ) : (
-        <p className="grid aspect-[16/10] place-items-center bg-accent/15 px-4 text-center text-[15px] text-ink">Site photo to come</p>
+        <p className="t-label grid aspect-[16/10] place-items-center bg-surface px-4 text-center">Site photo to come</p>
       )}
-      <figcaption className="flex-1 pb-10 pt-4 lg:p-7">
+      <figcaption className="flex-1 px-5 pb-8 pt-5 lg:p-7">
         <p className="text-lg font-medium text-white">{title}</p>
         <p className="mt-2 max-w-[52ch] text-lg leading-relaxed text-ink">{caption}</p>
-        {credit && <p className="mt-3 text-[15px] leading-snug text-soft">{credit}</p>}
+        {credit && <p className="t-label mt-3">{credit}</p>}
       </figcaption>
     </motion.figure>
   );
@@ -308,7 +308,7 @@ function ReportViewer() {
   }
   return (
     <motion.figure variants={rise} {...inView} className="w-full overflow-hidden bg-surface">
-      <figcaption className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3 sm:px-5">
+      <figcaption className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-line px-4 py-3 sm:px-5">
         <span className="text-[15px] text-ink">{E.title}: final report</span>
         <Action label="Open PDF" href={reportPdfUrl} icon="external" className="shrink-0" />
       </figcaption>
@@ -325,7 +325,7 @@ export function EscarpmentPage({ headingAs = 'h1' }) {
       <StatBar />
       <ChapterNav />
 
-      <div className="mt-28 space-y-36 sm:mt-40 sm:space-y-52">
+      <div className="space-y-[var(--section)] pt-[var(--section)]">
         <Chapter id="problem" title="A daily trip across a 30% grade" plain={E.overview.plain}>
           <div className="journal gap-y-14">
             <SlopeComparison />
@@ -351,7 +351,7 @@ export function EscarpmentPage({ headingAs = 'h1' }) {
 
         <Chapter id="phase-3" title="Phase 3: Ideas, then a matrix" plain={E.ideation.plain}>
           <ConceptFunnel />
-          <div className="journal mt-24 gap-y-12 sm:mt-32">
+          <div className="journal gap-y-12 pt-[calc(var(--lead-in)*2)]">
             <motion.div variants={rise} {...inView} className="field self-start bg-accent py-10 text-ground sm:py-14 lg:sticky lg:top-40 lg:col-span-5 lg:mx-0 lg:px-10">
               <h3 className="t-title">{E.ideation.contribution.title}</h3>
               <p className="mt-5 text-xl leading-relaxed">{E.ideation.contribution.text}</p>
@@ -366,14 +366,14 @@ export function EscarpmentPage({ headingAs = 'h1' }) {
               <PrototypeEntry key={item.title} {...item} wide={index === prototypes.items.length - 1} />
             ))}
           </motion.div>
-          <div className="journal mt-24 gap-y-8 sm:mt-32">
+          <div className="journal gap-y-8 pt-[calc(var(--lead-in)*2)]">
             <Subheading className="lg:col-span-5">The trade-offs we accepted</Subheading>
             <Points items={prototypes.tradeoffs} className="lg:col-span-7 md:grid-cols-3" />
           </div>
         </Chapter>
 
         <Chapter id="site-gallery" title="Campus issues on site" plain={E.gallery.plain}>
-          <motion.div variants={group} {...inView} className="grid grid-cols-1 lg:grid-cols-12">
+          <motion.div variants={group} {...inView} className="grid grid-cols-1 gap-px bg-line lg:grid-cols-12">
             {E.gallery.items.map((item, index) => (
               <MosaicTile key={item.title} item={item} span={MOSAIC[index]} index={index} />
             ))}
