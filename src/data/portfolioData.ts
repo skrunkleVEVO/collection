@@ -39,8 +39,19 @@ export const tabs: { id: TabId; label: string; short: string }[] = isSchoolMode
     ];
 
 export const about = {
-  title: 'I build software and systems to solve problems I actually run into.',
-  subtitle: 'First-year engineering student at UBC Okanagan. Building web tools, mobile apps, and practical engineering designs.',
+  /** The two lines of the first screen's headline, broken exactly here. */
+  headline: ['Physical systems.', 'Digital tools.'],
+  subtitle: 'The engineering journal of skrunkleVEVO, a first-year student at UBC Okanagan: one route across a steep campus, and four apps built for problems I actually run into.',
+  facts: [
+    { label: 'Based in', value: 'Kelowna, BC' },
+    { label: 'Studying', value: 'Engineering, UBC Okanagan' },
+    { label: 'Year', value: 'First, 2026' },
+  ],
+  introImage: {
+    src: `${import.meta.env.BASE_URL}images/apsc/upper-campus-road.jpg`,
+    alt: 'A campus road and sidewalk climbing past residences on the McKinley Escarpment',
+    note: 'The road up to the residences on the McKinley Escarpment, the slope the APSC 169 project sets out to soften. Google Street View.',
+  },
   sections: [
     {
       title: 'Why engineering',
@@ -66,26 +77,23 @@ export const about = {
     { name: 'Engineering design', skills: ['Stakeholder salience analysis', 'C-Sketch ideation', 'Weighted decision matrices', 'Sensitivity analysis'] },
     { name: 'Tools', skills: ['Git'] },
   ],
-  disciplines: [
-    { name: 'Software tools', items: 'AuraFlow, SomeFolio, Triaj, GarmentDB' },
-    { name: 'Physical infrastructure', items: 'Campus Escarpment Mobility System' },
-  ],
-  bridge: [
-    {
-      side: 'Physical infrastructure',
-      title: 'APSC 169 Project',
-      text: 'A safer, accessible route across the McKinley Escarpment.',
-      tab: 'apsc-169',
-      image: `${import.meta.env.BASE_URL}images/apsc/upper-campus-road.jpg`,
+  divisions: {
+    physical: { title: 'Physical systems', text: 'Infrastructure that has to work in snow, on a 30% grade, for everyone who walks it.' },
+    digital: { title: 'Digital tools', text: 'Software built for bottlenecks in my own focus, planning and organization, then used every day.' },
+  },
+  physicalEntry: {
+    image: {
+      src: `${import.meta.env.BASE_URL}images/apsc/international-mews.jpg`,
+      alt: 'International Mews: a shared paved roadway with no separate sidewalk near Nicola Residence',
+      caption: 'International Mews, where the route has no sidewalk. Google Street View.',
     },
-    {
-      side: 'Digital tools',
-      title: 'Personal Software',
-      text: 'Four apps built for bottlenecks in my own day.',
-      tab: 'software',
-      image: `${import.meta.env.BASE_URL}images/previews/somefolio-desktop.jpg`,
-    },
-  ],
+    facts: [
+      { label: 'Course', value: 'APSC 169, team project' },
+      { label: 'My role', value: 'Decision matrix weights and sensitivity analysis' },
+      { label: 'Stage', value: 'Phase 4, prototypes in testing' },
+      { label: 'Site', value: 'McKinley Escarpment, UBCO' },
+    ],
+  },
 };
 
 export type ProjectLink = { label: string; href: string; icon: 'github' | 'external'; primary?: boolean };
@@ -287,7 +295,7 @@ export const escarpment = {
   },
   prototypes: {
     plain: 'The team carried improved pedestrian pathways forward. Three prototypes test its riskiest assumptions, and results and photos will be added here when testing is complete.',
-    badge: '[Phase 4 — Testing in Progress]',
+    badge: 'Testing in progress',
     items: [
       {
         title: 'Prototype 1',
@@ -398,16 +406,19 @@ export const reflection = {
     {
       number: '3.1',
       title: 'What?',
+      image: { src: apscImage('discovery-route.jpg'), width: 849, height: 802, alt: 'The measured study route along Discovery Avenue on a campus map', caption: 'The Discovery Avenue study route, about 240 m with roughly 20 m of climb.' },
       text: 'Each phase changed what we thought the problem was. Topography and policy research showed that this was more than a steep hill: it was a connection between housing, classes and transit. The stakeholder analysis then changed the order of priorities, because rating groups by power, urgency and legitimacy made it clear whose needs had to shape the requirements first.',
     },
     {
       number: '3.2',
       title: 'So What?',
+      image: { src: apscImage('switchback-alignment.jpg'), width: 364, height: 252, alt: 'A switchback alignment sketched in red over a hillside path', caption: 'An early switchback sketch: a gentler slope paid for in distance.' },
       text: 'Real projects can’t maximize everything. Safety, accessibility, feasibility, weather resilience, travel efficiency and sustainability pull against each other, and a weighted decision matrix forces those trade-offs into the open. Testing the result with a sensitivity analysis shows whether a decision holds up or depends on one debatable number. That is what makes it defensible to the people who live with the outcome.',
     },
     {
       number: '3.3',
       title: 'Now What?',
+      image: { src: apscImage('international-mews.jpg'), width: 1348, height: 866, alt: 'International Mews, a shared roadway with no sidewalk', caption: 'International Mews, where people walk in the roadway.' },
       text: 'In future courses and projects, I’ll write design requirements before choosing a solution, state the weights behind any comparison, and test how sensitive the result is to those weights. I’ll use the same approach in my software projects, where I’ve usually made these trade-offs informally.',
     },
     {

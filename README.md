@@ -10,7 +10,7 @@ Everything the site says is in `src/data/portfolioData.ts`.
 | --- | --- |
 | Four-tab ePortfolio, or About Me and Projects only | `isSchoolMode` |
 | Reflection video (YouTube or Vimeo link) | `reflectionVideoUrl` |
-| Remove the Draft badges on the reflection cards | `reflection.draft` |
+| Remove the "Draft" notes on the reflection entries | `reflection.draft` |
 | Email and LinkedIn buttons | `contact` |
 | Phase 4 test results and photos | `escarpment.prototypes.items` (`image`, `results`) |
 | Final report PDF (put the file in `public/`) | `reportPdfUrl` |

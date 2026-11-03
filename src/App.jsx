@@ -4,6 +4,7 @@ import { MotionConfig } from 'framer-motion';
 import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
 import { tabs } from '@/data/portfolioData';
+import { PageActive } from '@/lib/pageContext';
 import { AboutPage } from '@/pages/AboutPage';
 import { EscarpmentPage } from '@/pages/EscarpmentPage';
 import { ProjectsPage } from '@/pages/ProjectsPage';
@@ -32,19 +33,6 @@ export default function App() {
   const firstRender = useRef(true);
 
   useEffect(() => {
-    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return undefined;
-    const onPointerMove = (event) => {
-      const card = event.target.closest?.('.card');
-      if (!card) return;
-      const box = card.getBoundingClientRect();
-      card.style.setProperty('--spot-x', `${event.clientX - box.left}px`);
-      card.style.setProperty('--spot-y', `${event.clientY - box.top}px`);
-    };
-    document.addEventListener('pointermove', onPointerMove, { passive: true });
-    return () => document.removeEventListener('pointermove', onPointerMove);
-  }, []);
-
-  useEffect(() => {
     const onHashChange = () => setActive(activeFromHash());
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
@@ -67,7 +55,7 @@ export default function App() {
         <main ref={main} tabIndex={-1} className="page-frame flex-1 outline-none">
           {tabs.map(({ id }) => (
             <div key={id} hidden={id !== active} className="page">
-              {PAGES[id]}
+              <PageActive.Provider value={id === active}>{PAGES[id]}</PageActive.Provider>
             </div>
           ))}
         </main>

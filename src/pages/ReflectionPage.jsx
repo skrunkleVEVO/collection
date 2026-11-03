@@ -3,13 +3,12 @@ import { motion } from 'framer-motion';
 import { PageHeading } from '@/components/PageHeading';
 import { reflection, reflectionVideoUrl } from '@/data/portfolioData';
 import { group, inView, rise } from '@/lib/motion';
-import { cn } from '@/lib/utils';
 import { toEmbedUrl } from '@/lib/videoEmbed';
 
-function ReflectionVideo({ className }) {
+function ReflectionVideo() {
   const embed = toEmbedUrl(reflectionVideoUrl);
   return (
-    <motion.div variants={rise} className={cn('card aspect-video overflow-hidden rounded-2xl', className)}>
+    <motion.div variants={rise} {...inView} className="aspect-video overflow-hidden bg-surface lg:col-span-7 lg:col-start-6">
       {embed ? (
         <iframe
           src={embed}
@@ -20,38 +19,48 @@ function ReflectionVideo({ className }) {
           className="h-full w-full border-0"
         />
       ) : (
-        <p className="placeholder-hatch grid h-full place-items-center px-4 text-center text-[15px] text-soft sm:text-lg">{reflection.videoPlaceholder}</p>
+        <div className="relative h-full">
+          <img src={`${import.meta.env.BASE_URL}images/apsc/upper-campus-road.jpg`} alt="" width="1441" height="840" className="h-full w-full object-cover opacity-40" />
+          <p className="absolute inset-0 grid place-items-center px-4 text-center text-lg text-white">The reflection video will play here once it is recorded.</p>
+        </div>
       )}
     </motion.div>
   );
 }
 
-function ReflectionCard({ number, title, text, className }) {
+// Each question is a journal entry: the question at display size in the left zone, the answer on the axis.
+function Entry({ title, text, image }) {
   return (
-    <motion.article variants={rise} className={cn('card flex flex-col rounded-2xl p-5 sm:p-7', className)}>
-      <div className="flex items-center justify-between gap-3">
-        <p className="font-display text-2xl leading-none tabular-nums text-accent">{number}</p>
-        {reflection.draft && <p className="rounded-full border border-white/20 px-2.5 py-1 text-[13px] leading-none text-ink">Draft</p>}
-      </div>
-      <h2 className="mt-4 font-display text-[clamp(1.875rem,3vw,2.75rem)] leading-tight tracking-[-0.02em] text-white">{title}</h2>
-      <p className="mt-4 text-[17px] leading-relaxed text-ink">{text}</p>
+    <motion.article variants={group} {...inView} className="journal gap-y-6">
+      <motion.div variants={rise} className="lg:col-span-5">
+        <h2 className="t-title text-white">{title}</h2>
+        {reflection.draft && <p className="mt-4 text-[15px] text-soft">Draft, to be rewritten in my own words.</p>}
+        {image && (
+          <figure className="mt-10 hidden w-[78%] lg:block">
+            <img src={image.src} alt={image.alt} width={image.width} height={image.height} loading="lazy" className="aspect-[4/3] w-full object-cover" />
+            <figcaption className="mt-3 max-w-[34ch] text-[15px] leading-snug text-soft">{image.caption}</figcaption>
+          </figure>
+        )}
+      </motion.div>
+      <motion.p variants={rise} className="max-w-[60ch] text-xl leading-[1.6] text-ink lg:col-span-7 lg:max-w-none lg:pt-3">
+        {text}
+      </motion.p>
     </motion.article>
   );
 }
 
 export function ReflectionPage() {
-  const [first, ...rest] = reflection.cards;
-  const restSpans = ['lg:col-span-4', 'lg:col-span-3', 'lg:col-span-5'];
   return (
     <section>
-      <PageHeading title={reflection.title} lede={reflection.lede} />
-      <motion.div variants={group} {...inView} className="mt-10 grid grid-cols-1 gap-4 sm:mt-14 lg:grid-cols-12">
-        <ReflectionVideo className="lg:col-span-8" />
-        <ReflectionCard {...first} className="lg:col-span-4" />
-        {rest.map((card, index) => (
-          <ReflectionCard key={card.number} {...card} className={restSpans[index]} />
+      <PageHeading title={reflection.title} lede={reflection.lede} action={{ label: 'Read the four answers', onClick: () => document.getElementById('reflection-entries').scrollIntoView() }} />
+      <div className="journal mt-16 sm:mt-24">
+        <ReflectionVideo />
+      </div>
+      <div id="reflection-entries" className="mt-28 scroll-mt-24 space-y-28 sm:mt-44 sm:space-y-40">
+        {reflection.cards.map((card) => (
+          <Entry key={card.number} {...card} />
         ))}
-      </motion.div>
+      </div>
     </section>
   );
 }

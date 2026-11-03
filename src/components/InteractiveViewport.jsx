@@ -26,10 +26,9 @@ function DeviceToggle({ id, mode, onChange }) {
           aria-pressed={mode === key}
           className={cn(
             'relative flex min-h-10 items-center gap-1.5 rounded-md px-2.5 text-[13px] transition-colors duration-150',
-            mode === key ? 'font-medium text-ground' : 'text-soft hover-fine:text-ink',
+            mode === key ? 'bg-accent font-medium text-ground' : 'text-soft hover-fine:text-ink',
           )}
         >
-          {mode === key && <motion.span layoutId={`viewport-toggle-${id}`} transition={spring.press} className="absolute inset-0 rounded-md bg-accent" />}
           <Icon className="relative size-3.5" aria-hidden="true" />
           <span className="relative">{label}</span>
         </motion.button>
@@ -52,8 +51,8 @@ export function InteractiveViewport({ project, stageShape }) {
   };
 
   return (
-    <figure className="overflow-hidden rounded-xl border border-white/10 bg-ground">
-      <div className="flex min-h-[3.75rem] flex-wrap items-center gap-x-3 gap-y-1 border-b border-white/10 px-3 py-1.5">
+    <figure data-ui className="overflow-hidden bg-surface">
+      <div className="flex min-h-[3.75rem] flex-wrap items-center gap-x-3 gap-y-1 px-3 py-1.5">
         <p className="min-w-0 flex-[1_1_10rem] truncate text-[13px] text-soft">{liveUrl}</p>
         <div className="ml-auto">
           <DeviceToggle id={id} mode={mode} onChange={setMode} />
@@ -61,7 +60,7 @@ export function InteractiveViewport({ project, stageShape }) {
       </div>
 
       {/* The stage's shape never changes, so toggling can't move anything else on the page. */}
-      <div className={cn('stage-dots relative aspect-[3/4] overflow-hidden sm:aspect-[4/3]', stageShape)}>
+      <div className={cn('relative bg-ground/60 aspect-[3/4] overflow-hidden sm:aspect-[4/3]', stageShape)}>
         <div className="absolute inset-0 flex items-center justify-center">
           <motion.div
             ref={frame}
@@ -102,7 +101,7 @@ export function InteractiveViewport({ project, stageShape }) {
         </div>
       </div>
 
-      <div className="flex min-h-[3.875rem] flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-white/10 px-3 py-2">
+      <div className="flex min-h-[3.875rem] flex-wrap items-center justify-between gap-x-4 gap-y-2 px-3 py-2">
         <figcaption className="min-w-0 flex-[1_1_12rem] text-[13px] leading-snug text-soft">{live ? 'Running the deployed app.' : previewNote}</figcaption>
         {live ? (
           <Action label="Close" onClick={stop} aria-label={`Close the live ${title} app`} className="shrink-0 px-4" />

@@ -77,12 +77,12 @@ export function AuraFlowDemo({ stageShape }) {
   const View = VIEWS[screen];
 
   return (
-    <figure className="overflow-hidden rounded-xl border border-white/10 bg-ground">
-      <div className="flex min-h-[3.75rem] items-center border-b border-white/10 px-3 py-1.5">
+    <figure data-ui className="overflow-hidden bg-surface">
+      <div className="flex min-h-[3.75rem] items-center px-3 py-1.5">
         <p className="text-[13px] text-soft">Interactive recreation</p>
       </div>
 
-      <div className={cn('stage-dots relative aspect-[3/4] overflow-hidden sm:aspect-[4/3]', stageShape)}>
+      <div className={cn('relative bg-ground/60 aspect-[3/4] overflow-hidden sm:aspect-[4/3]', stageShape)}>
         <div className="absolute inset-0 flex items-center justify-center">
           <div ref={frame} className="relative aspect-[9/19] h-[calc(100%-2rem)] shrink-0 overflow-hidden rounded-3xl bg-ground ring-1 ring-white/20">
             <div
@@ -120,7 +120,7 @@ export function AuraFlowDemo({ stageShape }) {
                 </AnimatePresence>
               </div>
 
-              <div className="grid shrink-0 grid-cols-4 border-t border-white/10 p-1">
+              <div className="grid shrink-0 grid-cols-4 bg-white/5 p-1">
                 {SCREENS.map(({ id, label }) => (
                   <motion.button
                     key={id}
@@ -140,9 +140,22 @@ export function AuraFlowDemo({ stageShape }) {
         </div>
       </div>
 
-      <figcaption className="flex min-h-[3.875rem] items-center border-t border-white/10 px-3 py-2 text-[13px] leading-snug text-soft">
+      <figcaption className="flex min-h-[3.875rem] items-center px-3 py-2 text-[13px] leading-snug text-soft">
         Tap the tabs. A recreation using the app’s own wording, with made-up messages, not a screenshot.
       </figcaption>
     </figure>
+  );
+}
+
+// A still of the blocked Reels screen, cropped to the same 16:10 frame as the other apps' screenshots.
+export function AuraFlowSnapshot() {
+  return (
+    <div data-ui aria-hidden="true" className="relative flex aspect-[16/10] w-full items-center justify-center overflow-hidden bg-surface transition-transform duration-500 ease-out group-hover-fine:scale-[1.04]">
+      <div className="flex h-[88%] aspect-[9/16] flex-col items-center justify-center rounded-xl bg-ground px-2 text-center ring-1 ring-white/20">
+        <p className="text-[13px] font-semibold leading-tight tracking-tight text-ink">Instagram Feed Blocked</p>
+        <p className="mt-1 text-[13px] leading-tight text-soft">DMs still open</p>
+        <span className="mt-3 rounded-full bg-accent px-3 py-1 text-[13px] font-medium text-ground">Open DMs</span>
+      </div>
+    </div>
   );
 }
